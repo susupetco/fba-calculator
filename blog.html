@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why I Built a Free FBA Profit Calculator (After 3 Years of Selling on Amazon)</title>
+  <meta name="description" content="I spent 3 years selling on Amazon and couldn't find a single calculator that showed my real profit in seconds. So I built one — free, no signup, one page. Here's why.">
+  <meta property="og:title" content="Why I Built a Free FBA Profit Calculator">
+  <meta property="og:description" content="3 years as an Amazon seller, countless sourcing decisions, and no tool that gave me a real bottom line. So I built one.">
+  <meta property="og:url" content="https://fba-calculator.com/blog.html">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://fba-calculator.com/blog.html">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Why I Built a Free FBA Profit Calculator (After 3 Years of Selling on Amazon)",
+    "description": "I spent 3 years selling on Amazon and couldn't find a single calculator that showed my real profit in seconds. So I built one — free, no signup, one page. Here's why.",
+    "url": "https://fba-calculator.com/blog.html",
+    "datePublished": "2026-05-20",
+    "author": { "@type": "Person", "name": "Sam Mor", "jobTitle": "Amazon FBA & E-Commerce Seller" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "FBA Profit Calculator",
+      "url": "https://fba-calculator.com"
+    }
+  }
+  </script>
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-181YZ9SVTB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-181YZ9SVTB');
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:       #0f172a;
+      --navy-mid:   #1e293b;
+      --blue:       #2563eb;
+      --blue-lt:    #3b82f6;
+      --purple:     #7c3aed;
+      --green:      #16a34a;
+      --white:      #ffffff;
+      --bg:         #f8fafc;
+      --border:     #e2e8f0;
+      --text:       #0f172a;
+      --muted:      #64748b;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+    /* HEADER */
+    .header {
+      background:var(--navy); padding:18px 32px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:3px solid var(--blue);
+    }
+    .brand { display:flex; align-items:baseline; gap:12px; text-decoration:none; }
+    .logo { font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; color:white; letter-spacing:1px; }
+    .logo em { color:var(--blue-lt); font-style:normal; }
+    .tagline { font-size:12px; color:#64748b; }
+    .header-cta {
+      padding:8px 20px; background:var(--blue); border-radius:6px;
+      font-family:'Oswald',sans-serif; font-size:13px; font-weight:600;
+      color:white; text-decoration:none; transition:background .15s;
+    }
+    .header-cta:hover { background:var(--blue-lt); }
+
+    /* HERO */
+    .hero {
+      background:var(--navy-mid);
+      border-bottom:1px solid #334155;
+      padding:64px 32px 56px;
+      text-align:center;
+    }
+    .hero-tag {
+      display:inline-block; font-size:11px; font-weight:600; text-transform:uppercase;
+      letter-spacing:1.5px; color:var(--blue-lt);
+      background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.2);
+      padding:4px 12px; border-radius:20px; margin-bottom:20px;
+    }
+    .hero h1 {
+      font-family:'Oswald',sans-serif; font-size:clamp(28px,4vw,46px);
+      font-weight:700; color:white; line-height:1.15; max-width:780px; margin:0 auto 20px;
+    }
+    .hero h1 em { color:var(--blue-lt); font-style:normal; }
+    .hero-sub {
+      font-size:17px; color:#94a3b8; max-width:600px; margin:0 auto 32px; line-height:1.65;
+    }
+    .hero-meta {
+      font-size:12px; color:#475569;
+    }
+    .hero-meta strong { color:#64748b; }
+
+    /* ARTICLE */
+    .article-wrap {
+      max-width:760px; margin:0 auto; padding:56px 32px 80px;
+    }
+
+    .article-wrap h2 {
+      font-family:'Oswald',sans-serif; font-size:24px; font-weight:600;
+      color:var(--navy); margin:48px 0 16px; letter-spacing:.5px;
+    }
+    .article-wrap h2:first-of-type { margin-top:0; }
+
+    .article-wrap p {
+      font-size:16px; line-height:1.8; color:#334155; margin-bottom:20px;
+    }
+
+    .article-wrap ul {
+      margin:16px 0 24px 0; padding-left:0; list-style:none;
+    }
+    .article-wrap ul li {
+      font-size:16px; line-height:1.75; color:#334155;
+      padding:6px 0 6px 28px; position:relative;
+    }
+    .article-wrap ul li::before {
+      content:'→'; position:absolute; left:0;
+      color:var(--blue); font-weight:700;
+    }
+
+    .pull-quote {
+      border-left:4px solid var(--purple);
+      background:white; border-radius:0 8px 8px 0;
+      padding:20px 24px; margin:32px 0;
+      font-size:18px; font-style:italic; color:var(--navy);
+      line-height:1.65; box-shadow:0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .feature-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:14px;
+      margin:24px 0 32px;
+    }
+    .feature-card {
+      background:white; border:1px solid var(--border); border-radius:10px;
+      padding:18px 20px;
+    }
+    .feature-card-icon { font-size:20px; margin-bottom:8px; }
+    .feature-card-title {
+      font-family:'Oswald',sans-serif; font-size:13px; font-weight:600;
+      text-transform:uppercase; letter-spacing:.8px; color:var(--navy); margin-bottom:6px;
+    }
+    .feature-card-desc { font-size:13px; color:var(--muted); line-height:1.55; }
+
+    .cta-block {
+      background:var(--navy); border-radius:14px;
+      padding:40px 36px; text-align:center; margin:48px 0 0;
+    }
+    .cta-block h3 {
+      font-family:'Oswald',sans-serif; font-size:26px; font-weight:700;
+      color:white; margin-bottom:12px;
+    }
+    .cta-block p {
+      color:#94a3b8; font-size:15px; margin-bottom:28px; line-height:1.6;
+    }
+    .cta-btn {
+      display:inline-block; padding:14px 36px;
+      background:var(--blue); border-radius:8px;
+      font-family:'Oswald',sans-serif; font-size:16px; font-weight:600;
+      color:white; text-decoration:none; transition:background .15s;
+    }
+    .cta-btn:hover { background:var(--blue-lt); }
+    .cta-free { font-size:12px; color:#475569; margin-top:12px; }
+
+    .divider { height:1px; background:var(--border); margin:40px 0; }
+
+    @media(max-width:640px) {
+      .hero { padding:44px 20px 40px; }
+      .article-wrap { padding:40px 20px 60px; }
+      .feature-grid { grid-template-columns:1fr; }
+      .header { padding:14px 20px; }
+      .tagline { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a class="brand" href="/">
+    <div class="logo">FBA <em>Profit</em> Calculator</div>
+    <div class="tagline">Real margins. No guesswork.</div>
+  </a>
+  <a class="header-cta" href="/">Use the Calculator →</a>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Amazon Seller Story</div>
+  <h1>I Spent 3 Years Selling on Amazon.<br>I Couldn't Find the Calculator I <em>Actually</em> Needed. So I Built It.</h1>
+  <p class="hero-sub">One page. Real numbers. Every fee Amazon charges — before you commit to a single unit.</p>
+  <div class="hero-meta">By <strong>Sam Mor</strong> · Amazon FBA &amp; E-Commerce Seller</div>
+</div>
+
+<!-- ARTICLE -->
+<div class="article-wrap">
+
+  <h2>The Problem Every Amazon Seller Knows</h2>
+  <p>
+    Three years ago, I listed my first product on Amazon. I had done my homework — or so I thought. I knew my cost of goods. I knew what I wanted to sell it for. I figured the rest would work itself out.
+  </p>
+  <p>
+    It didn't.
+  </p>
+  <p>
+    What I hadn't fully accounted for was everything Amazon quietly takes before a single dollar reaches me. The referral fee. The FBA fulfillment fee. Monthly storage. Inbound shipping. The duty I paid to get my goods into the country. The factory inspection. The packaging that somehow costs more per unit than I budgeted. A 1% return rate that eats into margin every single month.
+  </p>
+  <p>
+    By the time you add it all up, a product that looked like a 30% margin product on paper turns into a 9% margin product in practice — or worse, a loss.
+  </p>
+
+  <div class="pull-quote">
+    "A product that looked like a 30% margin on paper turned into a 9% margin in practice. I needed to know the real number before I ordered 500 units — not after."
+  </div>
+
+  <h2>What I Was Looking For</h2>
+  <p>
+    When I'm sourcing a new product — whether I'm at a trade show, on Alibaba at midnight, or evaluating a sample a supplier sent me — I need to answer one question fast:
+  </p>
+  <p>
+    <strong>If I sell this at $X, what do I actually make?</strong>
+  </p>
+  <p>
+    Not a rough estimate. Not a guess. The real bottom line, after every single cost Amazon is going to take from me. And alongside that: what price should I set at launch to be competitive, and what's the price I need to target to hit the profit margin I want?
+  </p>
+  <p>
+    I tried every tool out there. Jungle Scout's calculator. Helium 10's profitability tool. Amazon's own Revenue Calculator. Spreadsheet templates I found on Reddit. None of them gave me what I needed in one place, in one view, in under a minute.
+  </p>
+  <p>
+    They were either too simple (missing half the costs), too complicated (built for accountants, not sellers making fast sourcing decisions), or locked behind a $99/month subscription for features I'd use 5% of the time.
+  </p>
+
+  <h2>So I Built It</h2>
+  <p>
+    I wanted a calculator that worked the way I think when I'm evaluating a product. One page. Every number visible at once. No tabs, no exports, no account required.
+  </p>
+  <p>
+    Enter your ASIN and it pulls in the Amazon sale price, product dimensions, FBA fulfillment fee, and your current FBA inventory directly from Amazon's own data. Then you fill in your costs — manufacturing, packaging, freight, duty, inbound shipping — and the calculator does the rest.
+  </p>
+  <p>
+    In seconds, you see:
+  </p>
+  <ul>
+    <li>Net profit per unit — after every Amazon fee and every cost</li>
+    <li>Profit margin and ROI</li>
+    <li>Your exact breakeven price</li>
+    <li>A full cost breakdown showing where your margin is going</li>
+    <li>Total profit across your entire inventory, not just per unit</li>
+    <li>What happens to your margin if you adjust price, PPC spend, or tariff rate</li>
+  </ul>
+  <p>
+    That last one matters more than people realize. The calculator is a <em>decision tool</em>, not just a reporting tool. You can play with your price point until the margin looks right, then launch with confidence knowing that number is real.
+  </p>
+
+  <h2>What It Actually Covers</h2>
+  <p>
+    Most FBA calculators stop at referral fee + fulfillment fee. This one doesn't. Here's everything it accounts for:
+  </p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-card-icon">🏭</div>
+      <div class="feature-card-title">Full COGS</div>
+      <div class="feature-card-desc">Manufacture cost, packaging, instructions/inserts, freight to US — all divided by units automatically.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">📦</div>
+      <div class="feature-card-title">Every Amazon Fee</div>
+      <div class="feature-card-desc">FBA fulfillment (calculated from your dimensions), referral fee by category, FBA storage, and return processing.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">🌍</div>
+      <div class="feature-card-title">Import Duty & Tariffs</div>
+      <div class="feature-card-desc">Country of origin selector with HTS lookup link. Accounts for the real tariff rate, including US-China Section 301 rates.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">🚚</div>
+      <div class="feature-card-title">Inbound & 3PL</div>
+      <div class="feature-card-desc">FBA inbound shipping, AWD costs, and 3PL storage + pick & pack — if you use them.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">📣</div>
+      <div class="feature-card-title">PPC & Marketing</div>
+      <div class="feature-card-desc">TACoS % and influencer/UGC spend — because advertising isn't optional if you want to rank.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">↩️</div>
+      <div class="feature-card-title">Returns</div>
+      <div class="feature-card-desc">Category return rates and Amazon's return processing fee — calculated automatically, because returns are a real cost of doing business.</div>
+    </div>
+  </div>
+
+  <h2>Why It's Free</h2>
+  <p>
+    Because I'm an Amazon seller, not a SaaS company. I built this for myself and I'm sharing it because I know how many hours I wasted trying to piece this together from five different tools and a spreadsheet.
+  </p>
+  <p>
+    I hope it helps other sellers make faster, smarter sourcing decisions — and launch products at price points that are actually profitable from day one, not just hopeful.
+  </p>
+  <p>
+    No signup. No credit card. No free trial. Just the calculator. Use it as many times as you want.
+  </p>
+
+  <div class="pull-quote">
+    "I'm offering this free to help fellow Amazon sellers. The goal is simple: make it easier to source products that are actually profitable, and offer them at prices our customers love."
+  </div>
+
+  <h2>One More Thing</h2>
+  <p>
+    One feature I use constantly: the <strong>ASIN lookup</strong>. Paste in any Amazon ASIN and it pulls the live sale price, product dimensions, and FBA fee estimate straight from Amazon's data — automatically. No manual looking up fees in Seller Central, no guessing at size tiers.
+  </p>
+  <p>
+    If you're evaluating a competitor's product or modeling out a variation of something you already sell, it's the fastest way to get real numbers into the calculator without touching a single form field manually.
+  </p>
+
+  <div class="divider"></div>
+
+  <div class="cta-block">
+    <h3>Try It Now — It's Free</h3>
+    <p>No account. No signup. Just real FBA profit numbers in under 60 seconds.</p>
+    <a class="cta-btn" href="/" onclick="gtag('event','blog_to_calculator_cta')">Open the FBA Profit Calculator →</a>
+    <div class="cta-free">Free forever · Works on any product · ASIN lookup included</div>
+  </div>
+
+</div>
+
+</body>
+</html>

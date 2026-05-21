@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fba-calculator.com/sitemap.xml

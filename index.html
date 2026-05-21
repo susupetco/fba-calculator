@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FBA Profit Calculator — Know Your Numbers</title>
+  <meta name="description" content="Free Amazon FBA profit calculator with ASIN lookup. Enter your ASIN and instantly see net profit, margin, ROI — after every fee including tariffs, PPC, AWD, and returns. No signup.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://fba-calculator.com/">
+  <meta property="og:title" content="FBA Profit Calculator — Real Margins. No Guesswork.">
+  <meta property="og:description" content="Free Amazon FBA calculator with ASIN auto-lookup. See your true profit after every fee — referral, FBA, storage, tariffs, PPC, returns. No account required.">
+  <meta property="og:url" content="https://fba-calculator.com/">
+  <meta property="og:type" content="website">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "FBA Profit Calculator",
+    "url": "https://fba-calculator.com/",
+    "description": "Free Amazon FBA profit calculator with ASIN lookup. Calculates net profit after every Amazon fee including referral, FBA fulfillment, storage, tariffs, PPC, and returns.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-181YZ9SVTB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-181YZ9SVTB');
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:       #0f172a;
+      --navy-mid:   #1e293b;
+      --navy-light: #334155;
+      --blue:       #2563eb;
+      --blue-lt:    #3b82f6;
+      --blue-faint: #eff6ff;
+      --purple:     #7c3aed;
+      --green:      #16a34a;
+      --amber:      #d97706;
+      --red:        #dc2626;
+      --white:      #ffffff;
+      --bg:         #f8fafc;
+      --border:     #e2e8f0;
+      --text:       #0f172a;
+      --muted:      #64748b;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+    /* ── HEADER ── */
+    .header {
+      background:var(--navy); padding:18px 32px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:3px solid var(--blue);
+    }
+    .brand { display:flex; align-items:baseline; gap:12px; }
+    .logo { font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; color:white; letter-spacing:1px; }
+    .logo em { color:var(--blue-lt); font-style:normal; }
+    .tagline { font-size:12px; color:#64748b; }
+    .free-badge {
+      font-size:11px; color:var(--blue-lt);
+      background:rgba(59,130,246,0.12); padding:4px 10px;
+      border-radius:20px; border:1px solid rgba(59,130,246,0.2);
+    }
+
+    /* ── ASIN BAR ── */
+    .asin-bar {
+      background:var(--navy-mid); padding:13px 32px;
+      display:flex; align-items:center; gap:14px;
+      border-bottom:1px solid var(--navy);
+    }
+    .asin-label { font-family:'Oswald',sans-serif; font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:1.5px; white-space:nowrap; }
+    .asin-input {
+      font-family:'Oswald',sans-serif; font-size:15px; font-weight:500;
+      background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.12);
+      border-radius:6px; padding:7px 14px; color:white;
+      letter-spacing:1.5px; width:220px; text-transform:uppercase;
+    }
+    .asin-input::placeholder { color:rgba(255,255,255,0.2); font-size:13px; letter-spacing:.5px; text-transform:none; }
+    .asin-input:focus { outline:none; border-color:var(--blue); }
+    .asin-btn {
+      padding:7px 20px; background:var(--blue); border:none; border-radius:6px;
+      font-family:'Oswald',sans-serif; font-size:13px; font-weight:600;
+      color:white; cursor:pointer; transition:background .15s;
+    }
+    .asin-btn:hover { background:var(--blue-lt); }
+    .asin-status { font-size:12px; color:rgba(255,255,255,0.65); font-weight:600; flex:1; }
+
+    /* ── UNITS BAR ── */
+    .units-bar {
+      background:#111827; padding:10px 32px;
+      display:flex; align-items:center; gap:0;
+      border-bottom:1px solid var(--navy); flex-wrap:wrap;
+    }
+    .units-section { display:flex; align-items:center; gap:10px; padding:4px 20px 4px 0; }
+    .units-section + .units-section { padding-left:20px; border-left:1px solid #1e293b; }
+    .units-badge {
+      font-family:'Oswald',sans-serif; font-size:10px; font-weight:600;
+      padding:2px 8px; border-radius:3px; letter-spacing:1px; text-transform:uppercase;
+    }
+    .fba-badge { background:#16a34a; color:white; }
+    .awd-badge { background:var(--purple); color:white; }
+    .units-input {
+      width:76px; background:rgba(255,255,255,0.07); color:white;
+      font-family:'Oswald',sans-serif; font-size:18px; font-weight:600;
+      padding:4px 10px; border-radius:5px; border:1.5px solid rgba(255,255,255,0.1);
+      text-align:center; -moz-appearance:textfield;
+    }
+    .units-input::-webkit-inner-spin-button,
+    .units-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+    .units-input:focus { outline:none; border-color:var(--blue); }
+    .units-sublabel { font-size:11px; color:#475569; }
+    .units-total {
+      margin-left:auto; padding-left:20px;
+      font-size:11px; color:#475569;
+    }
+    .units-total strong { color:#94a3b8; font-family:'Oswald',sans-serif; font-size:14px; }
+
+    /* ── CATEGORY BAR ── */
+    .cat-bar {
+      background:var(--blue-faint); padding:11px 32px;
+      display:flex; align-items:center; gap:16px;
+      border-bottom:2px solid #bfdbfe; flex-wrap:wrap;
+    }
+    .cat-label { font-size:11px; font-weight:600; color:var(--navy); text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; }
+    #cat-ref-display { color:var(--green); font-weight:700; }
+    #cat-ret-display { color:var(--amber); font-weight:700; }
+    .cat-select {
+      padding:7px 12px; border:1.5px solid var(--border); border-radius:6px;
+      font-family:'Inter',sans-serif; font-size:13px; color:var(--text);
+      background:var(--bg); cursor:pointer; min-width:240px;
+    }
+    .cat-select:focus { outline:none; border-color:var(--blue); }
+    .cat-pills { display:flex; gap:8px; flex-wrap:wrap; }
+    .cat-pill {
+      font-size:11px; padding:3px 9px; border-radius:12px;
+      background:#f1f5f9; color:var(--muted); white-space:nowrap;
+    }
+    .cat-pill span { font-weight:600; color:var(--text); }
+
+    /* ── GRID ── */
+    .grid {
+      display:grid; grid-template-columns:1fr 390px;
+      gap:0; max-width:1380px; margin:0 auto;
+      padding:24px 32px; align-items:start;
+    }
+    .left { padding-right:24px; }
+    .right { position:sticky; top:24px; }
+
+    /* ── SECTIONS ── */
+    .sec { background:white; border-radius:10px; margin-bottom:14px; border:1px solid var(--border); overflow:hidden; }
+    .sec-hd {
+      display:flex; align-items:center; gap:10px;
+      padding:13px 20px; background:var(--navy-mid);
+      cursor:pointer; user-select:none;
+    }
+    .sec-icon { font-size:15px; }
+    .sec-title { font-family:'Oswald',sans-serif; font-size:13px; font-weight:600; color:white; letter-spacing:1px; text-transform:uppercase; flex:1; }
+    .sec-tot { font-family:'Oswald',sans-serif; font-size:14px; color:#60a5fa; }
+    .chevron { color:#475569; font-size:11px; transition:transform .2s; }
+    .sec.shut .chevron { transform:rotate(-90deg); }
+    .sec-bd { padding:14px 20px; }
+    .sec.shut .sec-bd { display:none; }
+
+    /* ── ROWS ── */
+    .row {
+      display:grid; grid-template-columns:1fr auto;
+      align-items:center; gap:12px;
+      padding:7px 0; border-bottom:1px solid #f1f5f9;
+    }
+    .row:last-child { border-bottom:none; padding-bottom:0; }
+    .row:first-child { padding-top:0; }
+    .row.enter { border-left:3px solid var(--blue); padding-left:8px; margin-left:-8px; }
+    .lbl { font-size:13px; color:var(--text); }
+    .sub { font-size:11px; color:var(--muted); margin-top:1px; }
+    .sub a { color:var(--blue); text-decoration:none; }
+    .sub a:hover { text-decoration:underline; }
+    .enter-prompt {
+      font-size: 10px; font-weight: 700; color: var(--purple);
+      text-transform: uppercase; letter-spacing: .6px; margin-top: 3px;
+    }
+    .row.enter:not(.no-prompt) .sub::after {
+      content: 'Enter your value →';
+      display: block;
+      font-size: 10px; font-weight: 700; color: var(--purple);
+      text-transform: uppercase; letter-spacing: .6px; margin-top: 3px;
+    }
+    .enter-hint-light {
+      font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.5);
+      text-transform: uppercase; letter-spacing: .6px;
+    }
+    .fw { display:flex; align-items:center; gap:4px; }
+    .pfx { font-size:13px; color:var(--muted); font-weight:500; }
+    .sfx { font-size:12px; color:var(--muted); }
+
+    input[type=number], select.inline-sel {
+      width:88px; padding:6px 10px;
+      border:1.5px solid var(--border); border-radius:6px;
+      font-family:'Inter',sans-serif; font-size:14px; font-weight:500;
+      color:var(--text); background:#fafafa; text-align:right;
+      transition:border-color .15s; -moz-appearance:textfield;
+    }
+    select.inline-sel { text-align:left; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; }
+    input[type=number]:focus, select.inline-sel:focus { outline:none; border-color:var(--blue); background:white; }
+    input[type=number][readonly] { background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0; cursor:default; }
+    .auto-tag {
+      font-size:9px; background:#e2e8f0; color:#94a3b8;
+      padding:1px 5px; border-radius:3px; text-transform:uppercase;
+      letter-spacing:.5px; margin-left:3px; white-space:nowrap;
+    }
+    .wide { width:108px; }
+
+    /* Dimensions row */
+    .dims-wrap { display:flex; flex-direction:column; gap:6px; }
+    .dims-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .dim-field { display:flex; align-items:center; gap:4px; }
+    .dim-lbl { font-size:11px; color:var(--muted); white-space:nowrap; }
+    .dim-input {
+      width:68px; padding:5px 8px;
+      border:1.5px solid var(--border); border-radius:5px;
+      font-family:'Inter',sans-serif; font-size:13px; font-weight:500;
+      color:var(--text); background:#fafafa; text-align:right;
+      -moz-appearance:textfield;
+    }
+    .dim-input::-webkit-inner-spin-button,
+    .dim-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+    .dim-input:focus { outline:none; border-color:var(--blue); background:white; }
+    .dims-result {
+      display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+      padding:7px 10px; background:#f8fafc; border-radius:6px;
+      border:1px solid var(--border); margin-top:2px;
+    }
+    .dims-result span { font-size:12px; color:var(--muted); }
+    .dims-result strong { font-size:12px; color:var(--text); }
+    .tier-pill {
+      font-size:11px; padding:2px 8px; border-radius:10px;
+      background:#dbeafe; color:#1e40af; font-weight:500;
+    }
+    .tier-pill.oversize { background:#fce7f3; color:#9d174d; }
+
+    .calc-row {
+      display:grid; grid-template-columns:1fr auto;
+      align-items:center; padding:4px 0;
+    }
+    .calc-lbl { font-size:11px; color:var(--muted); font-style:italic; }
+    .calc-val { font-family:'Oswald',sans-serif; font-size:13px; color:var(--blue); font-weight:500; }
+    .calc-val.hint { font-family:'Inter',sans-serif; font-size:11px; color:var(--muted); font-weight:400; font-style:italic; }
+
+    .divider { height:1px; background:var(--border); margin:10px 0; }
+    .sub-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0 2px; }
+    .sub-lbl { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+    .sub-val { font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; color:var(--navy); }
+
+    .info-box {
+      background:#f0f9ff; border:1px solid #bae6fd; border-radius:6px;
+      padding:8px 10px; margin:6px 0; font-size:11px; color:#0369a1; line-height:1.5;
+    }
+    .warn-box {
+      background:#fffbeb; border:1px solid #fde68a; border-radius:6px;
+      padding:8px 10px; margin-top:8px; font-size:11px; color:#92400e; line-height:1.5;
+    }
+
+    /* Toggle */
+    .tog-wrap { display:flex; align-items:center; gap:10px; padding:8px 0; }
+    .tog-lbl { font-size:13px; color:var(--text); }
+    .tog { position:relative; width:38px; height:21px; }
+    .tog input { opacity:0; width:0; height:0; }
+    .slider { position:absolute; inset:0; background:#cbd5e1; border-radius:21px; cursor:pointer; transition:.2s; }
+    .slider:before { content:''; position:absolute; width:15px; height:15px; left:3px; top:3px; background:white; border-radius:50%; transition:.2s; }
+    .tog input:checked + .slider { background:var(--blue); }
+    .tog input:checked + .slider:before { transform:translateX(17px); }
+    .sec-off { opacity:.4; pointer-events:none; }
+
+    /* Country row */
+    .country-sel {
+      padding:6px 10px; border:1.5px solid var(--border); border-radius:6px;
+      font-family:'Inter',sans-serif; font-size:13px; color:var(--text);
+      background:#fafafa; cursor:pointer;
+    }
+    .country-sel:focus { outline:none; border-color:var(--blue); }
+
+    /* ── RESULTS CARD ── */
+    .card { background:var(--navy); border-radius:12px; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,.18); }
+    .card-head { background:var(--blue); padding:15px 20px; text-align:center; }
+    .card-sub { font-family:'Oswald',sans-serif; font-size:18px; font-weight:700; color:white; text-transform:uppercase; letter-spacing:2px; margin-bottom:3px; }
+    .card-name { font-family:'Oswald',sans-serif; font-size:15px; color:white; font-weight:500; }
+    .card-body { padding:20px; }
+
+    .profit-block { text-align:center; padding:18px 0 16px; border-bottom:1px solid #1e293b; }
+    .profit-lbl { font-size:10px; color:#94a3b8; text-transform:uppercase; letter-spacing:2px; margin-bottom:6px; }
+    .profit-num { font-family:'Oswald',sans-serif; font-size:52px; font-weight:700; line-height:1; transition:color .3s; }
+    .profit-num.pos { color:#4ade80; }
+    .profit-num.warn { color:#fbbf24; }
+    .profit-num.neg { color:#f87171; }
+    .profit-sub { font-size:12px; color:#64748b; margin-top:6px; }
+
+    .metrics { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:16px 0; border-bottom:1px solid #1e293b; }
+    .met { background:#1e293b; border-radius:8px; padding:12px; text-align:center; }
+    .met-lbl { font-size:10px; color:#64748b; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+    .met-val { font-family:'Oswald',sans-serif; font-size:22px; font-weight:600; color:white; }
+    .met-val.pos { color:#4ade80; }
+    .met-val.warn { color:#fbbf24; }
+    .met-val.neg { color:#f87171; }
+
+    .wfall { padding:16px 0; border-bottom:1px solid #1e293b; }
+    .wfall-title { font-size:10px; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+    .wf-row { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+    .wf-lbl { font-size:11px; color:#94a3b8; width:106px; flex-shrink:0; }
+    .wf-bar-bg { flex:1; height:8px; background:#1e293b; border-radius:4px; overflow:hidden; }
+    .wf-bar { height:100%; border-radius:4px; transition:width .35s ease; }
+    .b-cogs    { background:#f97316; }
+    .b-fba     { background:#ef4444; }
+    .b-awd     { background:#8b5cf6; }
+    .b-3pl     { background:#06b6d4; }
+    .b-mktg    { background:#3b82f6; }
+    .b-returns { background:#6b7280; }
+    .wf-pct { font-size:10px; color:#64748b; width:32px; text-align:right; flex-shrink:0; }
+    .wf-amt { font-family:'Oswald',sans-serif; font-size:12px; color:#94a3b8; width:44px; text-align:right; flex-shrink:0; }
+
+    .be-block { padding:14px 0; border-bottom:1px solid #1e293b; }
+    .be-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    .be-lbl { font-size:12px; color:#94a3b8; }
+    .be-val { font-family:'Oswald',sans-serif; font-size:18px; color:#e2e8f0; }
+
+    .ord { padding:14px 0 0; }
+    .ord-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
+    .ord-lbl { font-size:12px; color:#94a3b8; }
+    .ord-val { font-family:'Oswald',sans-serif; font-size:15px; color:#e2e8f0; }
+    .ord-total { display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid #1e293b; margin-top:6px; }
+    .ord-tlbl { font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; }
+    .ord-tval { font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; color:#60a5fa; }
+
+    #awd-wf, #pl-wf { display:none; }
+
+    @media(max-width:900px) {
+      .grid { grid-template-columns:1fr; padding:16px; }
+      .left { padding-right:0; }
+      .right { position:static; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Free Amazon FBA Profit Calculator — Real Margins, No Guesswork</h1>
+<header class="header">
+  <div class="brand">
+    <div class="logo">FBA <em>Profit</em> Calculator</div>
+    <div class="tagline">Real margins. No guesswork.</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:20px;">
+    <a href="/blog.html" style="font-size:12px;color:#64748b;text-decoration:none;">Why I built this →</a>
+    <div class="free-badge">Free · No signup required</div>
+  </div>
+</header>
+
+<!-- ASIN BAR -->
+<div class="asin-bar">
+  <div style="display:flex;flex-direction:column;gap:2px;">
+    <span class="enter-hint-light">Enter ASIN (if applicable) →</span>
+    <span class="asin-label">ASIN</span>
+  </div>
+  <input class="asin-input" type="text" id="asin-field" placeholder="Enter ASIN to auto-populate" maxlength="10" oninput="this.value=this.value.toUpperCase()">
+  <button class="asin-btn" onclick="gtag('event','asin_lookup');lookupASIN()">Look Up</button>
+  <span class="asin-status" id="asin-status">Enter an ASIN to auto-populate price, dimensions, and FBA fees</span>
+</div>
+
+
+<!-- CATEGORY BAR -->
+<div class="cat-bar">
+  <div style="display:flex;flex-direction:column;gap:3px;">
+    <span style="font-size:10px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.6px;">Select Category →</span>
+    <span class="cat-label">Amazon Category</span>
+  </div>
+  <select class="cat-select" id="amz-category" onchange="setCategory()">
+    <option value="pet">Pet Supplies</option>
+    <option value="home">Home &amp; Kitchen</option>
+    <option value="health">Health &amp; Personal Care</option>
+    <option value="sports">Sports &amp; Outdoors</option>
+    <option value="toys">Toys &amp; Games</option>
+    <option value="beauty">Beauty &amp; Personal Care</option>
+    <option value="apparel">Clothing &amp; Accessories</option>
+    <option value="shoes">Shoes &amp; Handbags</option>
+    <option value="electronics">Electronics</option>
+    <option value="automotive">Automotive</option>
+    <option value="tools">Tools &amp; Home Improvement</option>
+    <option value="grocery">Grocery &amp; Gourmet Food</option>
+    <option value="baby">Baby Products</option>
+    <option value="jewelry">Jewelry</option>
+    <option value="watches">Watches</option>
+    <option value="furniture">Furniture</option>
+    <option value="musical">Musical Instruments</option>
+    <option value="office">Office Products</option>
+    <option value="books">Books</option>
+    <option value="other">Other (15% referral)</option>
+  </select>
+  <div class="cat-pills">
+    <div class="cat-pill">Referral fee: <span id="cat-ref-display">15%</span></div>
+    <div class="cat-pill">Avg return rate: <span id="cat-ret-display">~1%</span></div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="grid">
+<div class="left">
+
+  <!-- REVENUE -->
+  <div class="sec" id="s-rev">
+    <div class="sec-hd" onclick="tog('s-rev')">
+      <span class="sec-icon">💰</span>
+      <span class="sec-title">Revenue</span>
+      <span class="sec-tot" id="ht-rev">—</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="sec-bd">
+      <div class="row enter">
+        <div><div class="lbl">Total Units</div><div class="sub">Total units in your shipment — all per-unit costs divide by this</div></div>
+        <div class="fw">
+          <input type="number" id="total-units" value="0" min="0" step="1" oninput="updateUnits()">
+          <span class="sfx">units</span>
+        </div>
+      </div>
+      <div class="row enter">
+        <div><div class="lbl">Sale Price</div><div class="sub">Your current or target Amazon listing price</div></div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="sale-price" value="0" step="0.01" oninput="calc()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT COSTS -->
+  <div class="sec" id="s-cogs">
+    <div class="sec-hd" onclick="tog('s-cogs')">
+      <span class="sec-icon">🏭</span>
+      <span class="sec-title">Product Costs (COGS)</span>
+      <span class="sec-tot" id="ht-cogs">—</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="sec-bd">
+      <div class="row enter">
+        <div><div class="lbl">Unit Manufacture Cost</div><div class="sub">FOB or EXW — what you pay factory per unit</div></div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="mfr" value="0" step="0.01" oninput="calc()">
+        </div>
+      </div>
+      <div class="row enter">
+        <div><div class="lbl">Packaging</div><div class="sub">Total cost for entire order → auto ÷ units</div></div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="pkg-total" value="0" step="1" oninput="calc()">
+          <span class="sfx">total</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Packaging cost per unit</span>
+        <span class="calc-val" id="c-pkg">$0.00</span>
+      </div>
+      <div class="row enter">
+        <div><div class="lbl">Instructions / Inserts</div><div class="sub">Total cost for entire order → auto ÷ units</div></div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="instr-total" value="0" step="1" oninput="calc()">
+          <span class="sfx">total</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Inserts cost per unit</span>
+        <span class="calc-val" id="c-instr">$0.00</span>
+      </div>
+      <div class="row enter">
+        <div><div class="lbl">Freight to US</div><div class="sub">Total shipping cost (sea / air / courier) → auto ÷ units</div></div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="freight-total" value="0" step="1" oninput="calc()">
+          <span class="sfx">total</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Freight cost per unit</span>
+        <span class="calc-val" id="c-freight">$0.00</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- DUTY -->
+      <div class="row enter">
+        <div>
+          <div class="lbl">Country of Origin</div>
+          <div class="sub">Where your product is manufactured</div>
+        </div>
+        <div>
+          <select class="country-sel" id="country-origin" onchange="onCountryChange()">
+            <option value="CN">China</option>
+            <option value="VN">Vietnam</option>
+            <option value="IN">India</option>
+            <option value="BD">Bangladesh</option>
+            <option value="MX">Mexico (USMCA)</option>
+            <option value="ID">Indonesia</option>
+            <option value="KH">Cambodia</option>
+            <option value="US">United States</option>
+            <option value="OTHER">Other (specify below)</option>
+          </select>
+          <div id="country-other-wrap" style="display:none; margin-top:6px;">
+            <input type="text" id="country-other-input" placeholder="Enter country name"
+              style="width:180px; padding:6px 10px; border:1.5px solid var(--border); border-radius:6px; font-family:'Inter',sans-serif; font-size:13px; color:var(--text); background:#fafafa;"
+              oninput="onCountryChange()">
+          </div>
+        </div>
+      </div>
+      <div class="row enter">
+        <div>
+          <div class="lbl">Import Duty / Tariff Rate</div>
+          <div class="sub">Enter your HTS rate · <a href="https://hts.usitc.gov/" target="_blank">Look up at hts.usitc.gov →</a></div>
+        </div>
+        <div class="fw">
+          <input type="number" id="duty-pct" value="0" step="0.5" oninput="calc()">
+          <span class="sfx">%</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Duty amount per unit</span>
+        <span class="calc-val" id="c-duty">$0.00</span>
+      </div>
+      <div class="info-box" id="duty-note">
+        Duty rate depends on your HTS code and country of origin. Mexico/Canada may qualify for 0% under USMCA. US-China rates have changed significantly — verify before using.
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row enter">
+        <div>
+          <div class="lbl">Pre-shipment Inspection</div>
+          <div class="sub">Total fee you pay → auto ÷ total units above</div>
+        </div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="inspect-total" value="0" step="1" oninput="calc()">
+          <span class="sfx">total</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Per unit inspection cost</span>
+        <span class="calc-val" id="c-inspect">$0.00</span>
+      </div>
+
+      <div class="row enter">
+        <div>
+          <div class="lbl">FBA Inbound Shipping</div>
+          <div class="sub">Total cost to ship your goods to Amazon FBA (within US) → ÷ FBA units</div>
+        </div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="fba-inb-total" value="0" step="1" oninput="calc()">
+          <span class="sfx">total</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">FBA inbound cost per unit</span>
+        <span class="calc-val" id="c-fba-inb">$0.00</span>
+      </div>
+
+      <div class="row enter">
+        <div>
+          <div class="lbl">Damaged / Defective Unit Rate</div>
+          <div class="sub">Typically 0.5–2% of units arrive at FBA damaged. Amazon doesn't reimburse — this estimates that loss per unit sold.</div>
+        </div>
+        <div class="fw">
+          <input type="number" id="damage-rate" value="1" step="0.1" oninput="calc()">
+          <span class="sfx">%</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Replacement cost per unit</span>
+        <span class="calc-val" id="c-damage">$0.00</span>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-row">
+        <span class="sub-lbl">Total COGS</span>
+        <span class="sub-val" id="sub-cogs">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AMAZON FBA FEES -->
+  <div class="sec" id="s-fba">
+    <div class="sec-hd" onclick="tog('s-fba')">
+      <span class="sec-icon">📦</span>
+      <span class="sec-title">Amazon FBA Fees</span>
+      <span class="sec-tot" id="ht-fba">—</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="sec-bd">
+
+      <!-- DIMENSIONS -->
+      <div style="padding:8px 0 4px;">
+        <div class="lbl" style="margin-bottom:8px;">Product Dimensions &amp; Weight</div>
+        <div class="dims-wrap">
+          <div class="dims-row">
+            <div class="dim-field">
+              <span class="dim-lbl">L</span>
+              <input type="number" class="dim-input" id="dim-l" placeholder="0" step="0.1" oninput="calcDims()">
+              <span class="sfx">in</span>
+            </div>
+            <div class="dim-field">
+              <span class="dim-lbl">W</span>
+              <input type="number" class="dim-input" id="dim-w" placeholder="0" step="0.1" oninput="calcDims()">
+              <span class="sfx">in</span>
+            </div>
+            <div class="dim-field">
+              <span class="dim-lbl">H</span>
+              <input type="number" class="dim-input" id="dim-h" placeholder="0" step="0.1" oninput="calcDims()">
+              <span class="sfx">in</span>
+            </div>
+            <div class="dim-field">
+              <span class="dim-lbl">Weight</span>
+              <input type="number" class="dim-input" id="dim-w-oz" placeholder="0" step="0.1" oninput="calcDims()">
+              <span class="sfx">oz</span>
+            </div>
+          </div>
+          <div class="dims-result" id="dims-result" style="display:none;">
+            <span id="dims-tier-pill" class="tier-pill">—</span>
+            <span>Volume: <strong id="dims-vol">—</strong> cu ft</span>
+            <span>Est. FBA fee: <strong id="dims-fee">—</strong></span>
+            <span style="font-size:10px;color:#94a3b8;">· 2025 rates, non-apparel · verify in Seller Central</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div><div class="lbl">Referral Fee Rate</div><div class="sub">Set automatically by category</div></div>
+        <div class="fw">
+          <input type="number" id="ref-pct" value="15" readonly>
+          <span class="sfx">%</span>
+          <span class="auto-tag">auto</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Referral fee amount</span>
+        <span class="calc-val" id="c-ref">$0.00</span>
+      </div>
+
+      <div class="row enter no-prompt">
+        <div><div class="lbl">FBA Units</div><div class="sub">Auto: Total units minus AWD units</div></div>
+        <div class="fw">
+          <input type="number" id="fba-units" value="0" readonly>
+          <span class="auto-tag">auto</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="lbl">FBA Fulfillment Fee</div>
+          <div class="sub" id="fba-fee-sub">Enter dimensions above to auto-calculate</div>
+        </div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="fba-fee" value="0" readonly>
+          <span class="auto-tag">auto</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div><div class="lbl">FBA Storage Rate</div><div class="sub">Jan–Sep standard · Amazon published</div></div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="fba-stg-rate" value="0.78" readonly>
+          <span class="sfx">/cu ft/mo</span>
+          <span class="auto-tag">auto</span>
+        </div>
+      </div>
+      <div class="row">
+        <div><div class="lbl">Product Volume</div><div class="sub">Auto from dimensions above</div></div>
+        <div class="fw">
+          <input type="number" id="vol" value="0" readonly>
+          <span class="sfx">cu ft</span>
+          <span class="auto-tag">auto</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">FBA storage cost per unit (per month)</span>
+        <span class="calc-val" id="c-fba-stg">$0.00</span>
+      </div>
+      <div class="divider"></div>
+      <div class="sub-row">
+        <span class="sub-lbl">Total FBA Fees</span>
+        <span class="sub-val" id="sub-fba">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AWD COSTS -->
+  <div class="sec" id="s-awd">
+    <div class="sec-hd" onclick="tog('s-awd')">
+      <span class="sec-icon">🏬</span>
+      <span class="sec-title">AWD Costs</span>
+      <span class="sec-tot" id="ht-awd">Off</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="sec-bd">
+      <div class="tog-wrap">
+        <label class="tog">
+          <input type="checkbox" id="awd-on" onchange="togSec('awd-body','awd-wf','ht-awd');updateUnits()">
+          <span class="slider"></span>
+        </label>
+        <span class="tog-lbl">Using Amazon Warehousing &amp; Distribution (AWD)</span>
+      </div>
+      <div id="awd-body" class="sec-off">
+        <div class="row enter">
+          <div><div class="lbl">AWD Units</div><div class="sub">How many units are stored in Amazon Warehousing &amp; Distribution</div></div>
+          <div class="fw">
+            <input type="number" id="awd-units" value="0" min="0" step="1" oninput="updateUnits()">
+            <span class="sfx">units</span>
+          </div>
+        </div>
+        <div class="row enter">
+          <div>
+            <div class="lbl">AWD Inbound Shipping</div>
+            <div class="sub">Total cost to ship to AWD → auto ÷ AWD units</div>
+          </div>
+          <div class="fw"><span class="pfx">$</span>
+            <input type="number" id="awd-ship-total" value="0" step="1" oninput="calc()">
+            <span class="sfx">total</span>
+          </div>
+        </div>
+        <div class="calc-row">
+          <span class="calc-lbl">AWD inbound cost per unit</span>
+          <span class="calc-val" id="c-awd-inb">$0.00</span>
+        </div>
+        <div class="row">
+          <div><div class="lbl">AWD Receiving Fee</div><div class="sub">Per unit · charged on arrival at AWD</div></div>
+          <div class="fw"><span class="pfx">$</span>
+            <input type="number" id="awd-in" value="0.035" readonly>
+            <span class="auto-tag">auto</span>
+          </div>
+        </div>
+        <div class="row">
+          <div><div class="lbl">AWD Storage Rate</div><div class="sub">East Coast base · Amazon published</div></div>
+          <div class="fw"><span class="pfx">$</span>
+            <input type="number" id="awd-stg-rate" value="0.48" readonly>
+            <span class="sfx">/cu ft/mo</span>
+            <span class="auto-tag">auto</span>
+          </div>
+        </div>
+        <div class="calc-row">
+          <span class="calc-lbl">AWD storage cost per unit (per month)</span>
+          <span class="calc-val" id="c-awd-stg">$0.00</span>
+        </div>
+        <div class="row">
+          <div><div class="lbl">AWD → FBA Transport</div><div class="sub">Per cu ft · charged each replenishment</div></div>
+          <div class="fw"><span class="pfx">$</span>
+            <input type="number" id="awd-tr-rate" value="1.40" readonly>
+            <span class="sfx">/cu ft</span>
+            <span class="auto-tag">auto</span>
+          </div>
+        </div>
+        <div class="calc-row">
+          <span class="calc-lbl">Transport cost per unit</span>
+          <span class="calc-val" id="c-awd-tr">$0.00</span>
+        </div>
+        <div class="row">
+          <div><div class="lbl">AWD → FBA Replenishment Fee</div><div class="sub">Per unit · each time AWD ships to FBA</div></div>
+          <div class="fw"><span class="pfx">$</span>
+            <input type="number" id="awd-out" value="0.035" readonly>
+            <span class="auto-tag">auto</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="sub-row">
+          <span class="sub-lbl">Total AWD</span>
+          <span class="sub-val" id="sub-awd">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3PL COSTS -->
+  <div class="sec" id="s-3pl">
+    <div class="sec-hd" onclick="tog('s-3pl')">
+      <span class="sec-icon">🚚</span>
+      <span class="sec-title">3PL Costs</span>
+      <span class="sec-tot" id="ht-3pl">Off</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="sec-bd">
+      <div class="tog-wrap">
+        <label class="tog">
+          <input type="checkbox" id="pl-on" onchange="togSec('pl-body','pl-wf','ht-3pl');calc()">
+          <span class="slider"></span>
+        </label>
+        <span class="tog-lbl">Using a 3PL warehouse before sending to FBA</span>
+      </div>
+      <div id="pl-body" class="sec-off">
+        <div class="row enter">
+          <div>
+            <div class="lbl">Monthly Storage Fee</div>
+            <div class="sub">Total monthly 3PL bill → auto ÷ total units</div>
+          </div>
+          <div class="fw"><span class="pfx">$</span>
+            <input type="number" id="pl-monthly" value="0" step="1" oninput="calc()">
+            <span class="sfx">/mo</span>
+          </div>
+        </div>
+        <div class="calc-row">
+          <span class="calc-lbl">3PL storage cost per unit (per month)</span>
+          <span class="calc-val" id="c-3pl-stg">$0.00</span>
+        </div>
+        <div class="row enter">
+          <div><div class="lbl">Pick &amp; Pack Fee</div><div class="sub">Per unit when shipping out to FBA</div></div>
+          <div class="fw"><span class="pfx">$</span>
+            <input type="number" id="pl-pp" value="0" step="0.01" oninput="calc()">
+            <span class="sfx">/unit</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="sub-row">
+          <span class="sub-lbl">Total 3PL</span>
+          <span class="sub-val" id="sub-3pl">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKETING -->
+  <div class="sec" id="s-mktg">
+    <div class="sec-hd" onclick="tog('s-mktg')">
+      <span class="sec-icon">📣</span>
+      <span class="sec-title">Marketing</span>
+      <span class="sec-tot" id="ht-mktg">—</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="sec-bd">
+      <div class="row enter">
+        <div><div class="lbl">Amazon PPC — TACoS</div><div class="sub">% of sale price · typical range: 10–30%</div></div>
+        <div class="fw">
+          <input type="number" id="ppc" value="15" step="0.5" oninput="calc()">
+          <span class="sfx">%</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">PPC cost per unit</span>
+        <span class="calc-val" id="c-ppc">$0.00</span>
+      </div>
+      <div class="row enter">
+        <div><div class="lbl">Influencer / UGC</div><div class="sub">% of sale price — leave 0 if not applicable</div></div>
+        <div class="fw">
+          <input type="number" id="influ" value="0" step="0.5" oninput="calc()">
+          <span class="sfx">%</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Influencer cost per unit</span>
+        <span class="calc-val" id="c-influ">$0.00</span>
+      </div>
+      <div class="divider"></div>
+      <div class="sub-row">
+        <span class="sub-lbl">Total Marketing</span>
+        <span class="sub-val" id="sub-mktg">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETURNS -->
+  <div class="sec" id="s-ret">
+    <div class="sec-hd" onclick="tog('s-ret')">
+      <span class="sec-icon">↩️</span>
+      <span class="sec-title">After-Sale &amp; Returns</span>
+      <span class="sec-tot" id="ht-ret">—</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="sec-bd">
+      <div class="row">
+        <div><div class="lbl">Return Rate</div><div class="sub">Category average — updates with category selection</div></div>
+        <div class="fw">
+          <input type="number" id="ret-rate" value="1.0" readonly>
+          <span class="sfx">%</span>
+          <span class="auto-tag">auto</span>
+        </div>
+      </div>
+      <div class="row">
+        <div><div class="lbl">Amazon Return Processing Fee</div><div class="sub">Category rate · Amazon published</div></div>
+        <div class="fw"><span class="pfx">$</span>
+          <input type="number" id="ret-fee" value="1.88" readonly>
+          <span class="auto-tag">auto</span>
+        </div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-lbl">Return cost per unit sold</span>
+        <span class="calc-val" id="c-ret">$0.00</span>
+      </div>
+      <div class="warn-box">⚠️ If your return rate exceeds 2%, Amazon may apply a high-return-rate surcharge of $1.77–$5.35/unit depending on product size.</div>
+      <div class="divider"></div>
+      <div class="sub-row">
+        <span class="sub-lbl">Total Returns Cost</span>
+        <span class="sub-val" id="sub-ret">—</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /left -->
+
+<!-- RESULTS -->
+<div class="right">
+  <div class="card">
+    <div class="card-head">
+      <div class="card-sub">Per Unit · Net Profit</div>
+      <div class="card-name" id="r-name"></div>
+    </div>
+    <div class="card-body">
+      <div class="profit-block">
+        <div class="profit-lbl">Net Profit Per Unit</div>
+        <div class="profit-num warn" id="r-profit">$0.00</div>
+        <div class="profit-sub" id="r-sub">—</div>
+      </div>
+      <div class="metrics">
+        <div class="met"><div class="met-lbl">Profit Margin</div><div class="met-val" id="r-margin">—</div></div>
+        <div class="met"><div class="met-lbl">ROI</div><div class="met-val" id="r-roi">—</div></div>
+        <div class="met"><div class="met-lbl">Total Revenue</div><div class="met-val" id="r-rev">—</div></div>
+        <div class="met"><div class="met-lbl">Total Cost</div><div class="met-val" id="r-cost">—</div></div>
+      </div>
+      <div class="wfall">
+        <div class="wfall-title">Cost Breakdown</div>
+        <div class="wf-row"><span class="wf-lbl">COGS</span><div class="wf-bar-bg"><div class="wf-bar b-cogs" id="wb-cogs" style="width:0%"></div></div><span class="wf-pct" id="wp-cogs">0%</span><span class="wf-amt" id="wa-cogs">$0.00</span></div>
+        <div class="wf-row"><span class="wf-lbl">Amazon Fees</span><div class="wf-bar-bg"><div class="wf-bar b-fba" id="wb-fba" style="width:0%"></div></div><span class="wf-pct" id="wp-fba">0%</span><span class="wf-amt" id="wa-fba">$0.00</span></div>
+        <div class="wf-row" id="awd-wf"><span class="wf-lbl">AWD</span><div class="wf-bar-bg"><div class="wf-bar b-awd" id="wb-awd" style="width:0%"></div></div><span class="wf-pct" id="wp-awd">0%</span><span class="wf-amt" id="wa-awd">$0.00</span></div>
+        <div class="wf-row" id="pl-wf"><span class="wf-lbl">3PL</span><div class="wf-bar-bg"><div class="wf-bar b-3pl" id="wb-3pl" style="width:0%"></div></div><span class="wf-pct" id="wp-3pl">0%</span><span class="wf-amt" id="wa-3pl">$0.00</span></div>
+        <div class="wf-row"><span class="wf-lbl">Marketing</span><div class="wf-bar-bg"><div class="wf-bar b-mktg" id="wb-mktg" style="width:0%"></div></div><span class="wf-pct" id="wp-mktg">0%</span><span class="wf-amt" id="wa-mktg">$0.00</span></div>
+        <div class="wf-row"><span class="wf-lbl">Returns</span><div class="wf-bar-bg"><div class="wf-bar b-returns" id="wb-ret" style="width:0%"></div></div><span class="wf-pct" id="wp-ret">0%</span><span class="wf-amt" id="wa-ret">$0.00</span></div>
+      </div>
+      <div class="be-block">
+        <div class="be-row"><span class="be-lbl">Breakeven Price</span><span class="be-val" id="r-be">—</span></div>
+        <div class="be-row"><span class="be-lbl">Headroom above breakeven</span><span class="be-val" id="r-head">—</span></div>
+      </div>
+      <div class="ord">
+        <div class="ord-row"><span class="ord-lbl">Units</span><span class="ord-val" id="o-units">0</span></div>
+        <div class="ord-row"><span class="ord-lbl">Total Revenue</span><span class="ord-val" id="o-rev">—</span></div>
+        <div class="ord-row"><span class="ord-lbl">Total Costs</span><span class="ord-val" id="o-cost">—</span></div>
+        <div class="ord-total">
+          <span class="ord-tlbl">Net Profit Total</span>
+          <span class="ord-tval" id="o-total">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<script>
+  /* ── CATEGORY DATA ── */
+  // tierType 'threshold': whole price falls in one bracket (rate switches at price point)
+  // tierType 'split': fee calculated on each portion separately
+  const CATS = {
+    pet:         { ref:15, retRate:1.0,  retFee:1.88 },
+    home:        { ref:15, retRate:4.0,  retFee:2.10 },
+    health:      { ref:15, retRate:3.0,  retFee:1.95 },
+    sports:      { ref:15, retRate:5.0,  retFee:2.00 },
+    toys:        { ref:15, retRate:4.0,  retFee:1.90 },
+    beauty:      { ref:15, retRate:4.0,  retFee:1.95 },
+    apparel:     { ref:17, retRate:15.0, retFee:2.50 },
+    shoes:       { ref:15, retRate:18.0, retFee:2.80 },
+    electronics: { ref:8,  retRate:6.0,  retFee:2.20 },
+    automotive:  { ref:12, retRate:3.0,  retFee:1.90 },
+    tools:       { ref:15, retRate:3.0,  retFee:2.00 },
+    office:      { ref:15, retRate:3.0,  retFee:1.90 },
+    books:       { ref:15, retRate:1.0,  retFee:1.80 },
+    // Price-threshold categories (one rate applies to entire price)
+    grocery:     { ref:8,  retRate:2.0,  retFee:1.80,
+                   tierType:'threshold', tiers:[{upTo:15,pct:8},{upTo:Infinity,pct:15}] },
+    baby:        { ref:8,  retRate:2.0,  retFee:1.85,
+                   tierType:'threshold', tiers:[{upTo:10,pct:8},{upTo:Infinity,pct:15}] },
+    // Split-tier categories (fee calculated on each price portion separately)
+    jewelry:     { ref:20, retRate:5.0,  retFee:2.00,
+                   tierType:'split', tiers:[{upTo:250,pct:20},{upTo:Infinity,pct:5}] },
+    watches:     { ref:16, retRate:4.0,  retFee:2.00,
+                   tierType:'split', tiers:[{upTo:1500,pct:16},{upTo:Infinity,pct:3}] },
+    furniture:   { ref:15, retRate:5.0,  retFee:2.10,
+                   tierType:'split', tiers:[{upTo:200,pct:15},{upTo:Infinity,pct:10}] },
+    musical:     { ref:15, retRate:3.0,  retFee:2.00,
+                   tierType:'split', tiers:[{upTo:500,pct:15},{upTo:Infinity,pct:12}] },
+    other:       { ref:15, retRate:3.0,  retFee:2.00 },
+  };
+
+  function calcRefFee(price, catKey) {
+    const cat = CATS[catKey];
+    if (!cat || !cat.tiers) return price * (cat.ref / 100);
+    if (cat.tierType === 'threshold') {
+      for (const t of cat.tiers) {
+        if (price <= t.upTo) return price * (t.pct / 100);
+      }
+      return price * (cat.tiers[cat.tiers.length-1].pct / 100);
+    }
+    if (cat.tierType === 'split') {
+      let fee = 0, from = 0;
+      for (const t of cat.tiers) {
+        if (price <= from) break;
+        const inBracket = Math.min(price, t.upTo === Infinity ? price : t.upTo) - from;
+        fee += Math.max(0, inBracket) * (t.pct / 100);
+        from = t.upTo === Infinity ? price : t.upTo;
+      }
+      return fee;
+    }
+    return price * (cat.ref / 100);
+  }
+
+  function getEffectiveRefPct(price, catKey) {
+    if (!price) return CATS[catKey].ref;
+    const fee = calcRefFee(price, catKey);
+    return price > 0 ? (fee / price) * 100 : CATS[catKey].ref;
+  }
+
+  /* ── AMAZON FBA SIZE TIER & FEE (2025 non-apparel rates) ── */
+  function calcFBATier(lIn, wIn, hIn, weightOz) {
+    if (!lIn || !wIn || !hIn || !weightOz) return null;
+    const d = [lIn, wIn, hIn].sort((a,b) => b-a);
+    const [L, M, S] = d;
+    const weightLb = weightOz / 16;
+    const volCuIn  = lIn * wIn * hIn;
+    const volCuFt  = volCuIn / 1728;
+    const dimWtLb  = volCuIn / 139;
+    const girth    = 2 * (M + S);
+    const LpG      = L + girth;
+
+    let tier, fee;
+
+    if (L <= 15 && M <= 12 && S <= 0.75 && weightOz <= 16) {
+      tier = 'Small Standard';
+      fee = weightOz <= 4 ? 3.06 : weightOz <= 8 ? 3.15 : weightOz <= 12 ? 3.43 : 3.65;
+    } else if (L <= 18 && M <= 14 && S <= 8 && weightLb <= 20) {
+      tier = 'Large Standard';
+      const billLb = (volCuIn > 1728 && dimWtLb > weightLb) ? dimWtLb : weightLb;
+      const billOz = billLb * 16;
+      if (billOz <= 12)      fee = 3.77;
+      else if (billOz <= 16) fee = 4.25;
+      else if (billLb <= 2)  fee = 5.18;
+      else if (billLb <= 3)  fee = 5.68;
+      else {
+        const halfLbs = Math.ceil((billLb - 3) * 2);
+        fee = 6.07 + halfLbs * 0.08;
+      }
+    } else {
+      const billLb = Math.max(weightLb, dimWtLb);
+      if (L <= 60 && LpG <= 130 && weightLb <= 70) {
+        tier = 'Small Oversize';
+        fee = 9.73 + 0.42 * Math.max(0, billLb - 1);
+      } else if (L <= 108 && LpG <= 130 && weightLb <= 150) {
+        tier = 'Medium Oversize';
+        fee = 19.05 + 0.42 * Math.max(0, billLb - 1);
+      } else if (L <= 108 && LpG <= 165 && weightLb <= 150) {
+        tier = 'Large Oversize';
+        fee = 89.98 + 0.83 * Math.max(0, billLb - 90);
+      } else {
+        tier = 'Special Oversize';
+        fee = 137.32 + 0.91 * Math.max(0, billLb - 90);
+      }
+    }
+    return { tier, fee: Math.round(fee * 100) / 100, volCuFt: Math.round(volCuFt * 10000) / 10000 };
+  }
+
+  function calcDims() {
+    const l = parseFloat(document.getElementById('dim-l').value) || 0;
+    const w = parseFloat(document.getElementById('dim-w').value) || 0;
+    const h = parseFloat(document.getElementById('dim-h').value) || 0;
+    const woz = parseFloat(document.getElementById('dim-w-oz').value) || 0;
+    const res = calcFBATier(l, w, h, woz);
+    const resultEl = document.getElementById('dims-result');
+
+    if (res) {
+      document.getElementById('dims-tier-pill').textContent = res.tier;
+      document.getElementById('dims-tier-pill').className = 'tier-pill' + (res.tier.includes('Oversize') ? ' oversize' : '');
+      document.getElementById('dims-vol').textContent = res.volCuFt;
+      document.getElementById('dims-fee').textContent = '$' + res.fee.toFixed(2);
+      resultEl.style.display = 'flex';
+
+      // Auto-populate fee and volume (always readonly)
+      document.getElementById('fba-fee').value = res.fee;
+      document.getElementById('fba-fee-sub').textContent = 'Auto from dimensions · est. 2025 rate · verify in Seller Central';
+      document.getElementById('vol').value = res.volCuFt;
+    } else {
+      resultEl.style.display = 'none';
+      document.getElementById('fba-fee').value = 0;
+      document.getElementById('fba-fee-sub').textContent = 'Enter dimensions above to auto-calculate';
+      document.getElementById('vol').value = 0;
+    }
+    calc();
+  }
+
+  function updateUnits() {
+    const total = parseFloat(document.getElementById('total-units').value) || 0;
+    const awdOn = document.getElementById('awd-on').checked;
+    const awdU  = awdOn ? (parseFloat(document.getElementById('awd-units').value) || 0) : 0;
+    const fbaU  = Math.max(0, total - awdU);
+    document.getElementById('fba-units').value = fbaU;
+    calc();
+  }
+
+  function tog(id) { document.getElementById(id).classList.toggle('shut'); }
+
+  function togSec(bodyId, wfId, hdrId) {
+    const chk = document.getElementById(bodyId.replace('-body','-on')).checked;
+    document.getElementById(bodyId).classList.toggle('sec-off', !chk);
+    if (wfId) document.getElementById(wfId).style.display = chk ? 'flex' : 'none';
+    if (hdrId) document.getElementById(hdrId).textContent = chk ? '...' : 'Off';
+  }
+
+  function setCategory() {
+    const key = document.getElementById('amz-category').value;
+    const c   = CATS[key];
+    document.getElementById('ref-pct').value  = c.ref;
+    document.getElementById('ret-rate').value = c.retRate;
+    document.getElementById('ret-fee').value  = c.retFee;
+    document.getElementById('cat-ref-display').textContent = c.tiers ? c.ref + '% (price-tiered)' : c.ref + '%';
+    document.getElementById('cat-ret-display').textContent = '~' + c.retRate + '%';
+    calc();
+  }
+
+  function onCountryChange() {
+    const c = document.getElementById('country-origin').value;
+    const noteEl = document.getElementById('duty-note');
+    const otherWrap = document.getElementById('country-other-wrap');
+    otherWrap.style.display = c === 'OTHER' ? 'block' : 'none';
+
+    const otherName = c === 'OTHER' ? (document.getElementById('country-other-input').value.trim() || 'your country') : '';
+
+    if (c === 'MX') {
+      noteEl.textContent = 'Mexico may qualify for 0% duty under USMCA. Verify your product\'s USMCA eligibility at hts.usitc.gov.';
+    } else if (c === 'US') {
+      noteEl.textContent = 'Goods manufactured in the United States are not subject to import duty.';
+      document.getElementById('duty-pct').value = 0;
+      calc();
+    } else if (c === 'CN') {
+      noteEl.textContent = 'US-China tariff rates have changed significantly in 2025. Look up your HTS code at hts.usitc.gov and include any active Section 301 tariffs on top of the base rate.';
+    } else if (c === 'OTHER') {
+      const name = document.getElementById('country-other-input').value.trim();
+      noteEl.textContent = (name ? name : 'Your country') + ': look up the HTS code and duty rate at hts.usitc.gov. Check if any trade agreements apply (GSP, FTA, etc.).';
+    } else {
+      noteEl.textContent = 'Look up your HTS code and country-specific duty rate at hts.usitc.gov. Rates vary by product category and active trade agreements.';
+    }
+  }
+
+  async function lookupASIN() {
+    const asin = document.getElementById('asin-field').value.trim().toUpperCase();
+    const statusEl = document.getElementById('asin-status');
+    if (!asin || asin.length !== 10) {
+      statusEl.textContent = 'Enter a valid 10-character ASIN.';
+      return;
+    }
+
+    statusEl.textContent = 'Looking up ASIN…';
+    const btn = document.querySelector('.asin-btn');
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`https://fba-calculator-api.vercel.app/api/lookup?asin=${asin}`);
+      const d = await res.json();
+
+      if (d.error) { statusEl.textContent = `Error: ${d.error}`; btn.disabled = false; return; }
+
+      // Product image
+      let imgEl = document.getElementById('asin-product-img');
+      if (!imgEl) {
+        imgEl = document.createElement('img');
+        imgEl.id = 'asin-product-img';
+        imgEl.style.cssText = 'width:44px;height:44px;object-fit:contain;border-radius:4px;flex-shrink:0;';
+        document.querySelector('.asin-bar').insertBefore(imgEl, document.getElementById('asin-status'));
+      }
+      imgEl.src = d.image || '';
+      imgEl.style.display = d.image ? 'block' : 'none';
+
+      // Status line = product title
+      statusEl.textContent = d.title || asin;
+
+      // Sale price
+      if (d.price) {
+        document.getElementById('sale-price').value = parseFloat(d.price).toFixed(2);
+      }
+
+      // Dimensions → convert to inches / oz
+      if (d.dimensions) {
+        const dim = d.dimensions;
+        const toIn = dim.length_unit === 'inches' ? 1 : 39.3701;
+        const toOz = dim.weight_unit === 'pounds' ? 16 : dim.weight_unit === 'grams' ? 0.035274 : 1;
+
+        document.getElementById('dim-l').value   = (dim.length * toIn).toFixed(1);
+        document.getElementById('dim-w').value   = (dim.width  * toIn).toFixed(1);
+        document.getElementById('dim-h').value   = (dim.height * toIn).toFixed(1);
+        document.getElementById('dim-w-oz').value = (dim.weight * toOz).toFixed(1);
+        calcDims();
+      }
+
+      // FBA inventory → pre-fill total units
+      if (d.fba_inventory !== null && d.fba_inventory > 0) {
+        document.getElementById('total-units').value = d.fba_inventory;
+        updateUnits();
+      }
+
+      calc();
+    } catch (err) {
+      statusEl.textContent = `Lookup failed — check your connection.`;
+    }
+
+    btn.disabled = false;
+  }
+
+  const $    = id => parseFloat(document.getElementById(id).value) || 0;
+  const fmt  = n  => '$' + Math.abs(n).toFixed(2);
+  const fmtS = n  => (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2);
+  const fmtK = n  => { const a=Math.abs(n),s=n<0?'-$':'$'; return a>=1000?s+(a/1000).toFixed(1)+'K':fmtS(n); };
+  const pct  = n  => n.toFixed(1) + '%';
+  const cls  = m  => m >= 15 ? 'pos' : m >= 0 ? 'warn' : 'neg';
+  const set  = (id,v)   => { document.getElementById(id).textContent = v; };
+  const setC = (id,v,c) => { const el=document.getElementById(id); el.textContent=v; el.className=el.className.replace(/\b(pos|warn|neg)\b/g,''); el.classList.add(c); };
+
+  function calc() {
+    const sp    = $('sale-price');
+    const units = parseFloat(document.getElementById('total-units').value) || 0;
+    const fbaU  = parseFloat(document.getElementById('fba-units').value) || 0;
+    const awdOn = document.getElementById('awd-on').checked;
+    const awdU  = awdOn ? (parseFloat(document.getElementById('awd-units').value) || 0) : 0;
+    const shipTot = Math.max(1, units);
+
+    // COGS
+    const mfr     = $('mfr');
+    const pkg     = $('pkg-total') / shipTot;
+    const instr   = $('instr-total') / shipTot;
+    const frt     = $('freight-total') / shipTot;
+    const dPct    = $('duty-pct');
+    const duty    = mfr * (dPct / 100);
+    const insp    = $('inspect-total') / shipTot;
+    const fbaInb  = $('fba-inb-total') / Math.max(1, fbaU);
+    const damage  = mfr * ($('damage-rate') / 100);
+    const cogs    = mfr + pkg + instr + frt + duty + insp + fbaInb + damage;
+
+    // FBA — referral fee uses tiered calc where applicable
+    const catKey = document.getElementById('amz-category').value;
+    const ref    = calcRefFee(sp, catKey);
+    const refPct = sp > 0 ? (ref / sp) * 100 : $('ref-pct');
+    // Update displayed rate dynamically
+    document.getElementById('ref-pct').value = refPct.toFixed(1);
+    const cat = CATS[catKey];
+    if (cat.tiers) {
+      const effPct = getEffectiveRefPct(sp, catKey);
+      document.getElementById('cat-ref-display').textContent = effPct.toFixed(1) + '% (price-tiered)';
+    }
+    const fbaF   = $('fba-fee');
+    const fbaR   = $('fba-stg-rate');
+    const fbaM   = 1;
+    const vol    = $('vol');
+    const fbaStg = fbaR * vol * fbaM;
+    const fba    = ref + fbaF + fbaStg;
+
+    // AWD
+    const awdOn  = document.getElementById('awd-on').checked;
+    const awdInb = $('awd-ship-total') / Math.max(1, awdU);
+    const awdIn  = $('awd-in');
+    const awdSR  = $('awd-stg-rate');
+    const awdSM  = 1;
+    const awdTR  = $('awd-tr-rate');
+    const awdOut = $('awd-out');
+    const awdStg = vol * awdSR * awdSM;
+    const awdTr  = vol * awdTR;
+    const awd    = awdOn ? (awdInb + awdIn + awdStg + awdTr + awdOut) : 0;
+
+    // 3PL
+    const plOn  = document.getElementById('pl-on').checked;
+    const plStg = $('pl-monthly') / shipTot;
+    const plPP  = $('pl-pp');
+    const pl    = plOn ? (plStg + plPP) : 0;
+
+    // Marketing
+    const ppcC = sp * ($('ppc') / 100);
+    const infC = sp * ($('influ') / 100);
+    const mktg = ppcC + infC;
+
+    // Returns
+    const rRate = $('ret-rate');
+    const rFee  = $('ret-fee');
+    const ret   = (rRate / 100) * rFee;
+
+    // Totals
+    const total  = cogs + fba + awd + pl + mktg + ret;
+    const profit = sp - total;
+    const margin = sp > 0 ? (profit / sp) * 100 : 0;
+    const roi    = cogs > 0 ? (profit / cogs) * 100 : 0;
+    const bt     = total > 0 ? total : 1;
+
+    // Inline — show muted hint for unit-divided fields when no units entered
+    const noUnits = (fbaU + awdU) === 0;
+    const setCalc = (id, isHint, val) => {
+      const el = document.getElementById(id);
+      el.textContent = val;
+      el.classList.toggle('hint', isHint);
+    };
+    setCalc('c-pkg',     noUnits, noUnits ? 'enter units above' : fmt(pkg));
+    setCalc('c-instr',   noUnits, noUnits ? 'enter units above' : fmt(instr));
+    setCalc('c-freight', noUnits, noUnits ? 'enter units above' : fmt(frt));
+    set('c-damage',  fmt(damage));
+    set('c-duty',    fmt(duty));
+    setCalc('c-inspect', noUnits, noUnits ? 'enter units above' : fmt(insp));
+    setCalc('c-fba-inb', fbaU === 0, fbaU === 0 ? 'enter FBA units above' : fmt(fbaInb));
+    set('c-ref',     fmt(ref));
+    set('c-fba-stg', fmt(fbaStg));
+    set('c-awd-inb', fmt(awdInb));
+    set('c-awd-stg', fmt(awdStg));
+    set('c-awd-tr',  fmt(awdTr));
+    set('c-3pl-stg', fmt(plStg));
+    set('c-ppc',     fmt(ppcC));
+    set('c-influ',   fmt(infC));
+    set('c-ret',     fmt(ret));
+
+    // Subtotals
+    set('sub-cogs', fmt(cogs));
+    set('sub-fba',  fmt(fba));
+    set('sub-awd',  awdOn ? fmt(awd) : '—');
+    set('sub-3pl',  plOn  ? fmt(pl)  : '—');
+    set('sub-mktg', fmt(mktg));
+    set('sub-ret',  fmt(ret));
+
+    // Header totals
+    set('ht-rev',  fmt(sp));
+    set('ht-cogs', fmt(cogs));
+    set('ht-fba',  fmt(fba));
+    set('ht-mktg', fmt(mktg));
+    set('ht-ret',  fmt(ret));
+    if (awdOn) set('ht-awd', fmt(awd));
+    if (plOn)  set('ht-3pl', fmt(pl));
+
+    // Results
+    const c = cls(margin);
+    setC('r-profit', fmtS(profit), c);
+    set('r-sub',     pct(margin) + ' margin · ' + pct(roi) + ' ROI');
+    setC('r-margin', pct(margin), c);
+    setC('r-roi',    pct(roi), c);
+    set('r-rev',   fmtK(sp * units));
+    set('r-cost',  fmtK(total * units));
+    set('r-be',    fmt(total));
+    set('r-head',  fmtS(profit));
+    set('r-name',  sp > 0 ? '$' + sp.toFixed(2) + ' · per unit breakdown' : '');
+
+    // Waterfall
+    const bar = (wb,wp,wa,val) => {
+      document.getElementById(wb).style.width = Math.min(100,(val/bt)*100) + '%';
+      set(wp, pct((val/bt)*100));
+      set(wa, fmt(val));
+    };
+    bar('wb-cogs','wp-cogs','wa-cogs',cogs);
+    bar('wb-fba', 'wp-fba', 'wa-fba', fba);
+    bar('wb-awd', 'wp-awd', 'wa-awd', awd);
+    bar('wb-3pl', 'wp-3pl', 'wa-3pl', pl);
+    bar('wb-mktg','wp-mktg','wa-mktg',mktg);
+    bar('wb-ret', 'wp-ret', 'wa-ret', ret);
+
+    // Order summary
+    set('o-units', units > 0 ? units.toLocaleString() : '—');
+    set('o-rev',   fmtK(sp * units));
+    set('o-cost',  fmtK(total * units));
+    set('o-total', fmtK(profit * units));
+  }
+
+  setCategory();
+  updateUnits();
+  calc();
+
+</script>
+</body>
+</html>
