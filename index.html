@@ -1278,7 +1278,7 @@
     // Returns
     const rRate = $('ret-rate');
     const rFee  = $('ret-fee');
-    const ret   = (rRate / 100) * rFee;
+    const ret   = (units > 0 && sp > 0) ? (rRate / 100) * rFee : 0;
 
     // Totals
     const total  = cogs + fba + awd + pl + mktg + ret;
