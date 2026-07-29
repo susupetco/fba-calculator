@@ -23,6 +23,46 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is this FBA profit calculator really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — completely free, forever. No signup, no credit card, no free trial. Just enter your numbers and get your real profit margin instantly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What Amazon fees does this calculator include?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "This calculator includes: referral fee, FBA fulfillment fee (by size tier), monthly FBA storage, return processing fee, inbound shipping, AWD costs, import tariffs (including US-China Section 301), PPC/TACoS spend, and full COGS breakdown including manufacturing, packaging, and freight."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the ASIN lookup work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Enter any Amazon ASIN and the calculator automatically pulls the current sale price, product dimensions, FBA fee estimate, and inventory data from Amazon's systems — so you don't have to look anything up manually."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does this calculator account for tariffs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Select your country of origin and enter your tariff rate. The calculator includes a link to the HTS lookup tool for exact rates, and supports US-China Section 301 tariff rates."
+        }
+      }
+    ]
+  }
+  </script>
   <!-- GA4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-181YZ9SVTB"></script>
   <script>
@@ -357,7 +397,7 @@
     <div class="tagline" style="font-weight:700;">Real margins. No guesswork.</div>
   </div>
   <div style="display:flex;align-items:center;gap:20px;">
-    <a href="/blog.html" style="font-size:12px;color:#64748b;text-decoration:none;font-weight:700;">Why I built this →</a>
+    <a href="/blog" style="font-size:12px;color:var(--blue);text-decoration:none;font-weight:800;border:1.5px solid var(--blue);border-radius:999px;padding:6px 14px;white-space:nowrap;">Read: Why I built this →</a>
     <div class="free-badge">Free · No signup required</div>
   </div>
 </header>
@@ -949,6 +989,78 @@
 </div>
 
 </div><!-- /grid -->
+
+<!-- ══════════ BLOG SECTION ══════════ -->
+<style>
+  .blog-wrap { background:var(--white); border-top:1px solid var(--border); padding:44px 24px 40px; }
+  .blog-inner { max-width:1100px; margin:0 auto; }
+  .blog-eyebrow { font-size:11px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase;
+                  color:var(--blue); margin-bottom:14px; }
+  .blog-card { display:flex; gap:26px; align-items:stretch; border:1px solid var(--border);
+               border-radius:14px; overflow:hidden; background:var(--white);
+               box-shadow:0 1px 3px rgba(15,23,42,.06); transition:box-shadow .18s, transform .18s; }
+  .blog-card:hover { box-shadow:0 8px 24px rgba(15,23,42,.10); transform:translateY(-2px); }
+  .blog-rail { width:8px; flex:0 0 8px; background:linear-gradient(180deg,var(--blue),var(--purple)); }
+  .blog-body { padding:26px 28px 26px 20px; flex:1; }
+  .blog-meta { font-size:12px; font-weight:700; color:var(--muted); margin-bottom:9px;
+               letter-spacing:.3px; }
+  .blog-title { font-size:25px; line-height:1.3; font-weight:800; color:var(--text);
+                margin:0 0 11px; letter-spacing:-.3px; }
+  .blog-title a { color:inherit; text-decoration:none; }
+  .blog-title a:hover { color:var(--blue); }
+  .blog-desc { font-size:15.5px; line-height:1.62; color:var(--navy-light); margin:0 0 20px; max-width:74ch; }
+  .blog-cta { display:inline-block; background:var(--blue); color:#fff; font-size:14px; font-weight:800;
+              text-decoration:none; padding:11px 22px; border-radius:8px; letter-spacing:.2px; }
+  .blog-cta:hover { background:#1d4ed8; }
+  .site-footer { background:var(--navy); color:#94a3b8; padding:28px 24px; font-size:13px; }
+  .site-footer .fi { max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap;
+                     gap:14px 26px; align-items:center; justify-content:space-between; }
+  .site-footer a { color:#cbd5e1; text-decoration:none; font-weight:700; }
+  .site-footer a:hover { color:#fff; text-decoration:underline; }
+  @media(max-width:640px){
+    .blog-card { flex-direction:column; }
+    .blog-rail { width:100%; height:6px; flex:0 0 6px; }
+    .blog-body { padding:22px 20px; }
+    .blog-title { font-size:21px; }
+    .site-footer .fi { justify-content:flex-start; }
+  }
+</style>
+
+<section class="blog-wrap" id="blog">
+  <div class="blog-inner">
+    <div class="blog-eyebrow">From the blog</div>
+
+    <article class="blog-card">
+      <div class="blog-rail"></div>
+      <div class="blog-body">
+        <div class="blog-meta">May 20, 2026 · Sam Mor, Amazon &amp; e-commerce seller</div>
+        <h2 class="blog-title">
+          <a href="/blog">Why I Built a Free FBA Profit Calculator (After 3 Years of Selling on Amazon)</a>
+        </h2>
+        <p class="blog-desc">
+          I spent three years selling on Amazon and could not find a single calculator that showed
+          my real profit in seconds. Every one of them left something out: tariffs, PPC, inbound
+          shipping, storage, AWD, returns. So I built one that does not. Free, no signup, one page.
+        </p>
+        <a class="blog-cta" href="/blog"
+           onclick="if(window.gtag)gtag('event','blog_click',{location:'homepage_card'})">
+          Read the post →
+        </a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="fi">
+    <div><strong style="color:#f1f5f9;">FBA Profit Calculator</strong> · Real margins. No guesswork.</div>
+    <div style="display:flex;gap:22px;flex-wrap:wrap;">
+      <a href="/">Calculator</a>
+      <a href="/blog">Blog</a>
+      <a href="https://www.susupetco.com" target="_blank" rel="noopener">SUSU Pet Co</a>
+    </div>
+  </div>
+</footer>
 
 <script>
   /* ── CATEGORY DATA ── */
