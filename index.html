@@ -471,7 +471,7 @@
       <div class="row enter">
         <div><div class="lbl">Sale Price</div><div class="sub">Your current or target Amazon listing price</div></div>
         <div class="fw"><span class="pfx">$</span>
-          <input type="number" id="sale-price" value="0" step="0.01" oninput="calc()">
+          <input type="number" id="sale-price" value="0" step="0.01" oninput="calcDims()">
         </div>
       </div>
     </div>
@@ -666,7 +666,7 @@
             <span id="dims-tier-pill" class="tier-pill">—</span>
             <span>Volume: <strong id="dims-vol">—</strong> cu ft</span>
             <span>Est. FBA fee: <strong id="dims-fee">—</strong></span>
-            <span style="font-size:10px;color:#94a3b8;">· 2025 rates, non-apparel · verify in Seller Central</span>
+            <span style="font-size:10px;color:#94a3b8;">· 2026 rates, non-apparel, incl. 3.5% surcharge · verify in Seller Central</span>
           </div>
         </div>
       </div>
@@ -706,7 +706,7 @@
       </div>
 
       <div class="row">
-        <div><div class="lbl">FBA Storage Rate</div><div class="sub">Jan–Sep standard · Amazon published</div></div>
+        <div><div class="lbl">FBA Storage Rate</div><div class="sub" id="fba-stg-sub">Jan to Sep rate, standard size · Amazon 2026</div></div>
         <div class="fw"><span class="pfx">$</span>
           <input type="number" id="fba-stg-rate" value="0.78" readonly>
           <span class="sfx">/cu ft/mo</span>
@@ -914,15 +914,14 @@
     </div>
     <div class="sec-bd">
       <div class="row">
-        <div><div class="lbl">Return Rate</div><div class="sub">Category average — updates with category selection</div></div>
+        <div><div class="lbl">Return Rate</div><div class="sub">Starts at the category average. Type your own rate</div></div>
         <div class="fw">
-          <input type="number" id="ret-rate" value="1.0" readonly>
+          <input type="number" id="ret-rate" value="1.0" step="0.1" min="0" oninput="calc()">
           <span class="sfx">%</span>
-          <span class="auto-tag">auto</span>
         </div>
       </div>
       <div class="row">
-        <div><div class="lbl">Amazon Return Processing Fee</div><div class="sub">Category rate · Amazon published</div></div>
+        <div><div class="lbl">Amazon Return Processing Fee</div><div class="sub" id="ret-fee-sub">Category estimate · see note below</div></div>
         <div class="fw"><span class="pfx">$</span>
           <input type="number" id="ret-fee" value="1.88" readonly>
           <span class="auto-tag">auto</span>
@@ -932,7 +931,7 @@
         <span class="calc-lbl">Return cost per unit sold</span>
         <span class="calc-val" id="c-ret">$0.00</span>
       </div>
-      <div class="warn-box">⚠️ If your return rate exceeds 2%, Amazon may apply a high-return-rate surcharge of $1.77–$5.35/unit depending on product size.</div>
+      <div class="warn-box">⚠️ Amazon 2026 rule: the returns processing fee is charged only on returns above your category's return rate threshold (shown above). Apparel and shoes pay on every return. The rate depends on size tier and weight.</div>
       <div class="divider"></div>
       <div class="sub-row">
         <span class="sub-lbl">Total Returns Cost</span>
@@ -1125,72 +1124,209 @@
     return price > 0 ? (fee / price) * 100 : CATS[catKey].ref;
   }
 
-  /* ── AMAZON FBA SIZE TIER & FEE (2025 non-apparel rates) ── */
-  function calcFBATier(lIn, wIn, hIn, weightOz) {
+  /* ── AMAZON FBA SIZE TIER & FULFILLMENT FEE (2026 US rates, non-apparel) ──
+     Source: Amazon Seller Central "2026 US FBA fulfillment fee changes" (GABBX6GZPA8MSZGW),
+     "Product size tiers" (GG5KW835AHDJCH8W), "Monthly storage fees" (G3EDYEF6KUCFQTNM). Checked Sep 26 2026.
+     Price bands: under $10, $10 to $50 (both ends included), over $50.
+     Non-peak Jan 15 to Oct 14 2026. Holiday peak Oct 15 2026 to Jan 14 2027.
+     3.5% fuel and logistics surcharge on the fulfillment fee from Apr 17 2026. */
+  // Each row: [under $10, $10 to $50, over $50]
+  const FBA_2026 = {
+    nonPeak: {
+      smallStd: [ // unit weight up to 2, 4, 6, 8, 10, 12, 14, 16 oz
+        [2.43,3.32,3.58],[2.49,3.42,3.68],[2.56,3.45,3.71],[2.66,3.54,3.80],
+        [2.77,3.68,3.94],[2.82,3.78,4.04],[2.92,3.91,4.17],[2.95,3.96,4.22]],
+      largeStd: [ // shipping weight up to 4, 8, 12, 16 oz, then 1.25, 1.5 ... 3 lb
+        [2.91,3.73,3.99],[3.13,3.95,4.21],[3.38,4.20,4.46],[3.78,4.60,4.86],
+        [4.22,5.04,5.30],[4.60,5.42,5.68],[4.75,5.57,5.83],[5.00,5.82,6.08],
+        [5.10,5.92,6.18],[5.28,6.10,6.36],[5.44,6.26,6.52],[5.85,6.67,6.93]],
+      largeStd3:  [6.15,6.97,7.23],       // 3+ to 20 lb, plus $0.08 per 4 oz above 3 lb
+      smallBulky: [6.78,7.55,7.55],       // plus $0.38 per lb above first lb
+      largeBulky: [8.58,9.35,9.35],       // plus $0.38 per lb above first lb
+      xl50:       [25.56,26.33,26.33],    // plus $0.38 per lb above first lb
+      xl70:       [36.55,37.32,37.32],    // plus $0.75 per lb above 51 lb
+      xl150:      [50.55,51.32,51.32],    // plus $0.75 per lb above 71 lb
+      xlMax:      [194.18,194.95,194.95], // plus $0.19 per lb above 151 lb
+    },
+    peak: {
+      smallStd: [
+        [2.62,3.51,3.77],[2.68,3.61,3.87],[2.76,3.65,3.91],[2.86,3.74,4.00],
+        [2.98,3.89,4.15],[3.03,3.99,4.25],[3.14,4.13,4.39],[3.17,4.18,4.44]],
+      largeStd: [
+        [3.15,3.97,4.23],[3.39,4.21,4.47],[3.66,4.48,4.74],[4.07,4.89,5.15],
+        [4.52,5.34,5.60],[4.91,5.73,5.99],[5.07,5.89,6.15],[5.33,6.15,6.41],
+        [5.47,6.29,6.55],[5.67,6.49,6.75],[5.84,6.66,6.92],[6.26,7.08,7.34]],
+      largeStd3:  [6.69,7.51,7.77],
+      smallBulky: [7.82,8.59,8.59],
+      largeBulky: [9.62,10.39,10.39],
+      xl50:       [28.29,29.06,29.06],
+      xl70:       [39.36,40.13,40.13],
+      xl150:      [54.97,55.74,55.74],
+      xlMax:      [202.69,203.46,203.46],
+    },
+  };
+  const FBA_PEAK_START     = new Date(2026, 9, 15);  // Oct 15 2026
+  const FBA_PEAK_END       = new Date(2027, 0, 15);  // peak runs through Jan 14 2027
+  const FBA_SURCHARGE_FROM = new Date(2026, 3, 17);  // Apr 17 2026
+  const FBA_BAND_LABELS    = ['under $10', '$10 to $50', 'over $50'];
+
+  // Monthly FBA storage per cu ft (base rate): Jan to Sep vs Oct to Dec
+  function fbaStorageRate(standard, when) {
+    const oct2dec = (when || new Date()).getMonth() >= 9;
+    return standard ? (oct2dec ? 2.40 : 0.78) : (oct2dec ? 1.40 : 0.56);
+  }
+
+  function calcFBATier(lIn, wIn, hIn, weightOz, price, when) {
     if (!lIn || !wIn || !hIn || !weightOz) return null;
-    const d = [lIn, wIn, hIn].sort((a,b) => b-a);
-    const [L, M, S] = d;
-    const weightLb = weightOz / 16;
+    const date = when || new Date();
+    const [L, M, S] = [lIn, wIn, hIn].sort((a,b) => b-a);
+    const up       = x => Math.ceil(x - 1e-9);
+    const unitLb   = weightOz / 16;
     const volCuIn  = lIn * wIn * hIn;
     const volCuFt  = volCuIn / 1728;
-    const dimWtLb  = volCuIn / 139;
-    const girth    = 2 * (M + S);
-    const LpG      = L + girth;
+    const shipLb   = Math.max(unitLb, volCuIn / 139);                       // greater of unit or dim weight
+    const bulkyLb  = Math.max(unitLb, L * Math.max(M, 2) * Math.max(S, 2) / 139); // bulky/XL: min 2 in width and height
+    const LpG      = L + 2 * (M + S);
+    const peak     = date >= FBA_PEAK_START && date < FBA_PEAK_END;
+    const card     = peak ? FBA_2026.peak : FBA_2026.nonPeak;
+    const p        = parseFloat(price) || 0;
+    const band     = p <= 0 ? 1 : p < 10 ? 0 : p <= 50 ? 1 : 2;             // no price yet: assume $10 to $50
 
-    let tier, fee;
-
-    if (L <= 15 && M <= 12 && S <= 0.75 && weightOz <= 16) {
-      tier = 'Small Standard';
-      fee = weightOz <= 4 ? 3.06 : weightOz <= 8 ? 3.15 : weightOz <= 12 ? 3.43 : 3.65;
-    } else if (L <= 18 && M <= 14 && S <= 8 && weightLb <= 20) {
+    let tier, base, billLb, standard = true;
+    if (L <= 15 && M <= 12 && S <= 0.75 && shipLb <= 1) {
+      tier = 'Small Standard';                                               // fee on unit weight
+      billLb = unitLb;
+      base = card.smallStd[Math.min(7, Math.max(0, up(weightOz / 2) - 1))][band];
+    } else if (L <= 18 && M <= 14 && S <= 8 && shipLb <= 20) {
       tier = 'Large Standard';
-      const billLb = (volCuIn > 1728 && dimWtLb > weightLb) ? dimWtLb : weightLb;
-      const billOz = billLb * 16;
-      if (billOz <= 12)      fee = 3.77;
-      else if (billOz <= 16) fee = 4.25;
-      else if (billLb <= 2)  fee = 5.18;
-      else if (billLb <= 3)  fee = 5.68;
-      else {
-        const halfLbs = Math.ceil((billLb - 3) * 2);
-        fee = 6.07 + halfLbs * 0.08;
-      }
+      billLb = shipLb;
+      base = shipLb <= 3
+        ? card.largeStd[Math.max(0, up(shipLb * 4) - 1)][band]
+        : card.largeStd3[band] + 0.08 * up((shipLb - 3) * 4);
     } else {
-      const billLb = Math.max(weightLb, dimWtLb);
-      if (L <= 60 && LpG <= 130 && weightLb <= 70) {
-        tier = 'Small Oversize';
-        fee = 9.73 + 0.42 * Math.max(0, billLb - 1);
-      } else if (L <= 108 && LpG <= 130 && weightLb <= 150) {
-        tier = 'Medium Oversize';
-        fee = 19.05 + 0.42 * Math.max(0, billLb - 1);
-      } else if (L <= 108 && LpG <= 165 && weightLb <= 150) {
-        tier = 'Large Oversize';
-        fee = 89.98 + 0.83 * Math.max(0, billLb - 90);
+      standard = false;
+      const w = billLb = bulkyLb;
+      if (L <= 37 && M <= 28 && S <= 20 && LpG <= 130 && w <= 50) {
+        tier = 'Small Bulky';
+        base = card.smallBulky[band] + 0.38 * Math.max(0, up(w) - 1);
+      } else if (L <= 59 && M <= 33 && S <= 33 && LpG <= 130 && w <= 50) {
+        tier = 'Large Bulky';
+        base = card.largeBulky[band] + 0.38 * Math.max(0, up(w) - 1);
+      } else if (w <= 50) {
+        tier = 'Extra-Large 0 to 50 lb';
+        base = card.xl50[band] + 0.38 * Math.max(0, up(w) - 1);
+      } else if (w <= 70) {
+        tier = 'Extra-Large 50+ to 70 lb';
+        base = card.xl70[band] + 0.75 * Math.max(0, up(w) - 51);
+      } else if (w <= 150) {
+        tier = 'Extra-Large 70+ to 150 lb';
+        base = card.xl150[band] + 0.75 * Math.max(0, up(w) - 71);
       } else {
-        tier = 'Special Oversize';
-        fee = 137.32 + 0.91 * Math.max(0, billLb - 90);
+        tier = 'Extra-Large 150+ lb';                                        // fee on unit weight
+        billLb = unitLb;
+        base = card.xlMax[band] + 0.19 * Math.max(0, up(unitLb) - 151);
       }
     }
-    return { tier, fee: Math.round(fee * 100) / 100, volCuFt: Math.round(volCuFt * 10000) / 10000 };
+    const baseCents = Math.round(base * 100);
+    const surCents  = date >= FBA_SURCHARGE_FROM ? Math.round(baseCents * 35 / 1000) : 0;
+    // Overmax (A1): Extra-Large up to 150 lb over 96 in longest side or 130 in length plus girth.
+    // Amazon charges an extra handling fee; its amount is not in the saved source, so it is flagged, not added.
+    const overmax = tier.indexOf('Extra-Large') === 0 && tier !== 'Extra-Large 150+ lb' && (L > 96 || LpG > 130);
+    return {
+      tier, standard, peak, overmax, billLb,
+      band, bandLabel: FBA_BAND_LABELS[band], bandAssumed: p <= 0,
+      baseFee:   baseCents / 100,
+      surcharge: surCents / 100,
+      fee:       (baseCents + surCents) / 100,
+      storageRate: fbaStorageRate(standard, date),
+      volCuFt: Math.round(volCuFt * 10000) / 10000,
+    };
+  }
+
+  /* ── AMAZON RETURNS PROCESSING FEE (2026 US) ──
+     Source: Seller Central "2026 returns processing fee changes" (GZGEQLTM3RZXUV6T), checked Sep 26 2026.
+     All products except apparel and shoes: charged only on returned units above the category threshold.
+     Apparel and shoes: charged on every returned unit. Rate by size tier and shipping weight.
+     The 3.5% surcharge is not added here (Amazon ties it to fulfillment fees). */
+  const RET_2026 = {
+    smallStd:    [1.78,1.84,1.90,1.96,2.02,2.08,2.14,2.21],   // up to 2, 4 ... 16 oz
+    largeStd:    [2.36,2.70,3.05,3.39,3.70,4.01,4.32,4.63,4.66,4.68,4.71,4.73], // up to 4, 8, 12, 16 oz, then 1.25 ... 3 lb
+    largeStd3:   5.00,                                         // plus $0.05 per 4 oz above 3 lb
+    apSmallStd:  [1.65,1.75,1.85,1.95],                        // apparel and shoes: up to 4, 8, 12, 16 oz
+    apLargeStd:  [2.04,2.12,2.19,2.27,2.62,2.98,3.33,3.69],    // apparel and shoes: up to 4, 8, 12, 16 oz, 1.5, 2, 2.5, 3 lb
+    apLargeStd3: 3.89,                                         // plus $0.10 per half lb above 3 lb
+  };
+  // Category thresholds from the source table. null = apparel and shoes, every return is charged.
+  const RET_THRESHOLD = {
+    pet: [10.2, 'Pet Products'], home: [8.1, 'Home and Kitchen'],
+    health: [5.5, 'Beauty, Health and Personal Care'], beauty: [5.5, 'Beauty, Health and Personal Care'],
+    sports: [8.7, 'Sports and Outdoors'], toys: [4.7, 'Toys and Games'],
+    apparel: null, shoes: null,
+    electronics: [11.2, 'Consumer Electronics'], automotive: [9.1, 'Automotive and Powersports'],
+    tools: [8.7, 'Tools and Home Improvement'], grocery: [2.9, 'Grocery and Gourmet'],
+    baby: [9.3, 'Baby Products'], jewelry: [10.8, 'Jewelry'], watches: [12.0, 'Watches'],
+    furniture: [9.6, 'Furniture'], musical: [9.2, 'Musical Instruments and AV Production'],
+    office: [4.4, 'Office Products'], books: [5.1, 'Media - Books, DVD, Music, Software, Video'],
+    other: [4.8, 'Everything Else'],
+  };
+  let lastFbaRes = null;
+
+  // Per returned unit, from the size tier result of calcFBATier. null when no dimensions.
+  function calcReturnsFee(res, everyReturn) {
+    if (!res) return null;
+    const up = x => Math.ceil(x - 1e-9), w = res.billLb, t = res.tier, R = RET_2026;
+    const pick = (arr, i) => arr[Math.min(arr.length - 1, Math.max(0, i))];
+    let fee;
+    if (t === 'Small Standard') {
+      fee = everyReturn ? pick(R.apSmallStd, up(w * 4) - 1) : pick(R.smallStd, up(w * 8) - 1);
+    } else if (t === 'Large Standard') {
+      if (everyReturn) fee = w <= 1 ? pick(R.apLargeStd, up(w * 4) - 1)
+                         : w <= 3 ? pick(R.apLargeStd, 3 + up((w - 1) * 2))
+                         : R.apLargeStd3 + 0.10 * up((w - 3) * 2);
+      else fee = w <= 3 ? pick(R.largeStd, up(w * 4) - 1) : R.largeStd3 + 0.05 * up((w - 3) * 4);
+    } else if (t === 'Small Bulky' || t === 'Large Bulky') fee = 6.74 + 0.32 * Math.max(0, up(w) - 1);
+    else if (t === 'Extra-Large 0 to 50 lb')    fee = 26.33 + 0.38 * Math.max(0, up(w) - 1);
+    else if (t === 'Extra-Large 50+ to 70 lb')  fee = 40.12 + 0.75 * Math.max(0, up(w) - 51);
+    else if (t === 'Extra-Large 70+ to 150 lb') fee = 52.45 + 0.75 * Math.max(0, up(w) - 71);
+    else fee = 157.35 + 0.19 * Math.max(0, up(w) - 151);
+    return Math.round(fee * 100) / 100;
+  }
+
+  // Returns processing cost per unit sold: rate charged on returns above the threshold (or on all, for apparel and shoes).
+  function calcReturnCost(catKey, ratePct, feePerReturn) {
+    const th = RET_THRESHOLD[catKey];
+    const chargedPct = th === null ? ratePct : Math.max(0, ratePct - th[0]);
+    return (chargedPct / 100) * feePerReturn;
   }
 
   function calcDims() {
-    const l = parseFloat(document.getElementById('dim-l').value) || 0;
-    const w = parseFloat(document.getElementById('dim-w').value) || 0;
-    const h = parseFloat(document.getElementById('dim-h').value) || 0;
-    const woz = parseFloat(document.getElementById('dim-w-oz').value) || 0;
-    const res = calcFBATier(l, w, h, woz);
+    // Use the full-precision ASIN value while the field still shows what the lookup put there
+    const num = id => { const el = document.getElementById(id);
+      return (el.dataset.exact && el.dataset.shown === el.value) ? parseFloat(el.dataset.exact) : (parseFloat(el.value) || 0); };
+    const l = num('dim-l'), w = num('dim-w'), h = num('dim-h'), woz = num('dim-w-oz');
+    const price = parseFloat(document.getElementById('sale-price').value) || 0;
+    const res = calcFBATier(l, w, h, woz, price);
+    lastFbaRes = res;
     const resultEl = document.getElementById('dims-result');
+    const stdStg = res ? res.standard : true;
+    const oct2dec = new Date().getMonth() >= 9;
+    document.getElementById('fba-stg-rate').value = res ? res.storageRate : fbaStorageRate(true);
+    document.getElementById('fba-stg-sub').textContent =
+      (oct2dec ? 'Oct to Dec peak rate' : 'Jan to Sep rate') + ', ' + (stdStg ? 'standard size' : 'oversize') + ' · Amazon 2026';
 
     if (res) {
-      document.getElementById('dims-tier-pill').textContent = res.tier;
-      document.getElementById('dims-tier-pill').className = 'tier-pill' + (res.tier.includes('Oversize') ? ' oversize' : '');
+      document.getElementById('dims-tier-pill').textContent = res.tier + (res.overmax ? ' · Overmax' : '');
+      document.getElementById('dims-tier-pill').className = 'tier-pill' + (res.standard ? '' : ' oversize');
       document.getElementById('dims-vol').textContent = res.volCuFt;
-      document.getElementById('dims-fee').textContent = '$' + res.fee.toFixed(2);
+      document.getElementById('dims-fee').textContent = '$' + res.fee.toFixed(2) + (res.overmax ? ' + Overmax fee' : '');
       resultEl.style.display = 'flex';
 
       // Auto-populate fee and volume (always readonly)
       document.getElementById('fba-fee').value = res.fee;
-      document.getElementById('fba-fee-sub').textContent = 'Auto from dimensions · est. 2025 rate · verify in Seller Central';
+      document.getElementById('fba-fee-sub').textContent =
+        (res.overmax ? 'Overmax: extra Amazon handling fee applies, see Seller Central · ' : '') +
+        '$' + res.baseFee.toFixed(2) + ' fee + $' + res.surcharge.toFixed(2) + ' fuel surcharge (3.5%) · 2026 ' +
+        (res.peak ? 'holiday peak' : 'non-peak') + ', ' + res.bandLabel + ' price' + (res.bandAssumed ? ' (assumed, enter a sale price)' : '');
       document.getElementById('vol').value = res.volCuFt;
     } else {
       resultEl.style.display = 'none';
@@ -1297,11 +1433,13 @@
         const toIn = dim.length_unit === 'inches' ? 1 : 39.3701;
         const toOz = dim.weight_unit === 'pounds' ? 16 : dim.weight_unit === 'grams' ? 0.035274 : 1;
 
-        document.getElementById('dim-l').value   = (dim.length * toIn).toFixed(1);
-        document.getElementById('dim-w').value   = (dim.width  * toIn).toFixed(1);
-        document.getElementById('dim-h').value   = (dim.height * toIn).toFixed(1);
-        document.getElementById('dim-w-oz').value = (dim.weight * toOz).toFixed(1);
-        calcDims();
+        // Keep full precision for the fee math; round only what the field shows
+        const setExact = (id, v) => { const el = document.getElementById(id);
+          el.value = String(parseFloat(v.toFixed(2))); el.dataset.exact = String(v); el.dataset.shown = el.value; };
+        setExact('dim-l', dim.length * toIn);
+        setExact('dim-w', dim.width  * toIn);
+        setExact('dim-h', dim.height * toIn);
+        setExact('dim-w-oz', dim.weight * toOz);
       }
 
       // FBA inventory → pre-fill total units
@@ -1310,7 +1448,7 @@
         updateUnits();
       }
 
-      calc();
+      calcDims();   // re-prices the fee for the new price even when no dimensions came back
     } catch (err) {
       statusEl.textContent = `Lookup failed — check your connection.`;
     }
@@ -1389,8 +1527,14 @@
 
     // Returns
     const rRate = $('ret-rate');
-    const rFee  = $('ret-fee');
-    const ret   = (units > 0 && sp > 0) ? (rRate / 100) * rFee : 0;
+    const rTh   = RET_THRESHOLD[catKey];
+    const rFeeAmz = calcReturnsFee(lastFbaRes, rTh === null);
+    const rFee  = rFeeAmz !== null ? rFeeAmz : cat.retFee;   // no dimensions yet: old category estimate
+    document.getElementById('ret-fee').value = rFee.toFixed(2);
+    document.getElementById('ret-fee-sub').textContent =
+      (rTh === null ? 'Charged on every return (apparel and shoes)' : 'Only returns above ' + rTh[0] + '% (' + rTh[1] + ')') +
+      ' · ' + (rFeeAmz !== null ? '2026 ' + lastFbaRes.tier + ' rate' : 'estimate, enter dimensions');
+    const ret   = (units > 0 && sp > 0) ? calcReturnCost(catKey, rRate, rFee) : 0;
 
     // Totals
     const total  = cogs + fba + awd + pl + mktg + ret;
@@ -1474,7 +1618,7 @@
 
   setCategory();
   updateUnits();
-  calc();
+  calcDims();
 
 </script>
 </body>
